@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.loofa"
-    compileSdk = 31
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.loofa"
@@ -63,6 +63,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.databinding:databinding-runtime:8.1.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -74,4 +75,9 @@ dependencies {
     // Navigation Compose
     implementation("androidx.navigation:navigation-compose:2.7.0-rc01")
 
+    // Koin
+    implementation ("io.insert-koin:koin-androidx-compose:3.4.6")
+
+    // for new API replaced startActivityForResult
+    implementation ("androidx.fragment:fragment-ktx:1.7.0-alpha01")
 }
