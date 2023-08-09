@@ -17,6 +17,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.*
 
+@Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
 class Repository {
 
     var connected: MutableLiveData<Boolean?> = MutableLiveData(null)
@@ -26,17 +27,16 @@ class Repository {
     val inProgress = MutableLiveData<Event<Boolean>>()
     val connectError = MutableLiveData<Event<Boolean>>()
 
-    var mBluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    private var mBluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private var mBluetoothStateReceiver: BroadcastReceiver? = null
     var targetDevice: BluetoothDevice? = null
-    var socket: BluetoothSocket? = null
-    var mOutputStream: OutputStream? = null
-    var mInputStream: InputStream? = null
+    private var socket: BluetoothSocket? = null
+    private var mOutputStream: OutputStream? = null
+    private var mInputStream: InputStream? = null
 
     var foundDevice: Boolean = false
 
-    private lateinit var sendByte: ByteArray
-    var discovery_error = false
+
 
     fun isBluetoothSupport(): Boolean {
         return if (mBluetoothAdapter == null) {
@@ -68,7 +68,8 @@ class Repository {
         bluetoothAdapter?.startDiscovery() // Rozpoczęcie skanowania urządzeń Bluetooth
     }
 
-    fun registerBluetoothReceiver() {
+
+    private fun registerBluetoothReceiver() {
         // Filtr intencji
         val stateFilter = IntentFilter()
         stateFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED) // BluetoothAdapter.ACTION_STATE_CHANGED: zmiana stanu Bluetooth
@@ -129,12 +130,12 @@ class Repository {
 
                     BluetoothDevice.ACTION_FOUND -> {
                         if (!foundDevice) {
-                            val device_name = device!!.name
-                            val device_Address = device.address
+                            val deviceName = device!!.name
+                            val deviceAddress = device.address
 
                             // Szukanie urządzeń o nazwie zaczynającej się od "RNM"
-                            if (device_name != null && device_name.length > 4) {
-                                if (device_name.substring(0, 3) == "Luf") {
+                            if (deviceName != null && deviceName.length > 4) {
+                                if (deviceName.substring(0, 3) == "Luf") {
                                     // Filtruj urządzenie docelowe i użyj connectToTargetedDevice()
                                     targetDevice = device
                                     foundDevice = true
@@ -217,7 +218,7 @@ class Repository {
                 // Błąd podczas wysyłania danych
                 e.printStackTrace()
             }
-        }.run()
+        }.start()
     }
 
     /**
@@ -225,26 +226,26 @@ class Repository {
      * @ByteToUint: byte[] -> uint
      * @byteArrayToHex: byte[] -> hex string
      */
-    private val m_ByteBuffer: ByteBuffer = ByteBuffer.allocateDirect(8)
+    private val mByteBuffer: ByteBuffer = ByteBuffer.allocateDirect(8)
     // byte -> uint
-    fun ByteToUint(data: ByteArray?, offset: Int, endian: ByteOrder): Long {
-        synchronized(m_ByteBuffer) {
-            m_ByteBuffer.clear()
-            m_ByteBuffer.order(endian)
-            m_ByteBuffer.limit(8)
+    fun byteToUnit(data: ByteArray?, offset: Int, endian: ByteOrder): Long {
+        synchronized(mByteBuffer) {
+            mByteBuffer.clear()
+            mByteBuffer.order(endian)
+            mByteBuffer.limit(8)
             if (endian === ByteOrder.LITTLE_ENDIAN) {
-                m_ByteBuffer.put(data, offset, 4)
-                m_ByteBuffer.putInt(0)
+                mByteBuffer.put(data, offset, 4)
+                mByteBuffer.putInt(0)
             } else {
-                m_ByteBuffer.putInt(0)
-                m_ByteBuffer.put(data, offset, 4)
+                mByteBuffer.putInt(0)
+                mByteBuffer.put(data, offset, 4)
             }
-            m_ByteBuffer.position(0)
-            return m_ByteBuffer.long
+            mByteBuffer.position(0)
+            return mByteBuffer.long
         }
     }
 
-    fun byteArrayToHex(a: ByteArray): String? {
+    fun byteArrayToHex(a: ByteArray): String {
         val sb = StringBuilder()
         for (b in a) sb.append(String.format("%02x ", b /*&0xff*/))
         return sb.toString()

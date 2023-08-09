@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.kierman.lufanalezaco.viewmodel.MainViewModel" />
+            type="com.kierman.lufanalezaco.viewmodel.LufaViewModel" />
     </data>
 
     <FrameLayout

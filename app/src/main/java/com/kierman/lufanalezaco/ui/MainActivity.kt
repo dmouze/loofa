@@ -14,24 +14,29 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import com.kierman.lufanalezaco.R
-import com.kierman.lufanalezaco.databinding.ActivityMainBinding
-import com.kierman.lufanalezaco.util.*
-import com.kierman.lufanalezaco.viewmodel.MainViewModel
-import kotlinx.android.synthetic.main.activity_main.*
+import com.kierman.lufanalezaco.databinding.ActivityConnectBinding
+import com.kierman.lufanalezaco.util.PERMISSIONS
+import com.kierman.lufanalezaco.util.REQUEST_ALL_PERMISSION
+import com.kierman.lufanalezaco.util.Util
+import com.kierman.lufanalezaco.viewmodel.LufaViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel by viewModel<MainViewModel>()
+    private val viewModel by viewModel<LufaViewModel>()
 
     var mBluetoothAdapter: BluetoothAdapter? = null
     private var recv: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding: ActivityMainBinding =
-            DataBindingUtil.setContentView(this, R.layout.activity_main)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        actionBar?.hide()
+        val binding = DataBindingUtil.setContentView(this, R.layout.activity_connect) as ActivityConnectBinding
+
         binding.viewModel = viewModel
+
 
         if (!hasPermissions(this, PERMISSIONS)) {
             requestPermissions(PERMISSIONS, REQUEST_ALL_PERMISSION)
@@ -42,7 +47,6 @@ class MainActivity : AppCompatActivity() {
 
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
             viewModel.onClickConnect()
         }
     }
@@ -75,6 +79,8 @@ class MainActivity : AppCompatActivity() {
                     viewModel.setInProgress(false)
                     viewModel.btnConnected.set(true)
                     Util.showNotification("Urządzenie zostało połączone.")
+                    val intent = Intent(this, WelcomeActivity::class.java)
+                    startActivity(intent)
                 } else {
                     viewModel.setInProgress(false)
                     viewModel.btnConnected.set(false)
@@ -93,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.putTxt.observe(this) {
             if (it != null) {
                 recv += it
-                sv_read_data.fullScroll(View.FOCUS_DOWN)
+//                sv_read_data.fullScroll(View.FOCUS_DOWN)
                 viewModel.txtRead.set(recv)
             }
         }
@@ -132,7 +138,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.txtRead.set("Tutaj można zobaczyć przychodzącą wiadomość")
     }
 
     override fun onPause() {

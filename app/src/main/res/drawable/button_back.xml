@@ -2,16 +2,16 @@
 
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/round_background_appcolor3"/>
+        android:drawable="@drawable/round_background_black_trans"/>
 
     <item
         android:state_window_focused="false"
         android:state_enabled="true"
-        android:drawable="@drawable/round_background_appcolor1"/>
+        android:drawable="@drawable/round_background_black_trans"/>
 
     <item
         android:state_enabled="true"
-        android:drawable="@drawable/round_background_appcolor1"/>
+        android:drawable="@drawable/round_background_black_trans"/>
 
     <item
         android:state_enabled="false"

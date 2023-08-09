@@ -1,6 +1,6 @@
 package com.kierman.lufanalezaco.util
 
-open class Event<out T>(val content: T) {
+open class Event<out T>(private val content: T) {
     private var hasBeenHandled = false
 
     fun getContentIfNotHandled(): T? {
