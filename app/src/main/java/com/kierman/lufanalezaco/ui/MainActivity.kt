@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.txtRead.set("tutaj można zobaczyć przychodzącą wiadomość")
+        viewModel.txtRead.set("Tutaj można zobaczyć przychodzącą wiadomość")
     }
 
     override fun onPause() {

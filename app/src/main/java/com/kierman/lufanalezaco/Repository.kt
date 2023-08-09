@@ -134,7 +134,7 @@ class Repository {
 
                             // Szukanie urządzeń o nazwie zaczynającej się od "RNM"
                             if (device_name != null && device_name.length > 4) {
-                                if (device_name.substring(0, 3) == "ESP") {
+                                if (device_name.substring(0, 3) == "Luf") {
                                     // Filtruj urządzenie docelowe i użyj connectToTargetedDevice()
                                     targetDevice = device
                                     foundDevice = true
