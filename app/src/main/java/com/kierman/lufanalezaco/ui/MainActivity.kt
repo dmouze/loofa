@@ -145,6 +145,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.unregisterReceiver()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         //super.onBackPressed()
         viewModel.setInProgress(false)

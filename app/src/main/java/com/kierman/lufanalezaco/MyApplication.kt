@@ -8,6 +8,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 class MyApplication : Application() {
 
@@ -28,7 +29,7 @@ class MyApplication : Application() {
         startKoin {
             // Możesz wyświetlać logi
             // Sprawdzanie błędów - androidLogger(Level.ERROR)
-            androidLogger()
+            androidLogger(Level.ERROR)
             // Przekazanie kontekstu Androida
             androidContext(this@MyApplication)
             // Pobranie właściwości z pliku assets/koin.properties

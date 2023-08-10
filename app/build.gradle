@@ -3,18 +3,16 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'koin'
-    id 'kotlin-android-extensions'
-
+    id 'com.google.gms.google-services'
 }
 
 android {
-    compileSdk 30
-    buildToolsVersion "30.0.1"
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.kierman.lufanalezaco"
         minSdkVersion 26
-        targetSdkVersion 30
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
 
@@ -37,16 +35,18 @@ android {
     dataBinding {
         enabled = true
     }
+    namespace 'com.kierman.lufanalezaco'
 }
 
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-datetime:0.3.0"
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
@@ -63,9 +63,8 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.7.0-alpha01'
 
     // GIFs
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.27'
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:32.2.2')
-
 }
