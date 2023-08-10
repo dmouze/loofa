@@ -1,6 +1,5 @@
 package com.kierman.lufanalezaco.viewmodel
 
-import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
@@ -64,12 +63,10 @@ class LufaViewModel(private val repository: Repository): ViewModel() {
 
     fun zapalLed(){
         onClickSendData("a")
-        Log.d("poszło","poszło")
     }
 
     fun zgasLed(){
         onClickSendData("b")
-        Log.d("poszło","poszło")
     }
 
     fun unregisterReceiver(){
@@ -80,6 +77,5 @@ class LufaViewModel(private val repository: Repository): ViewModel() {
         val byteArr = sendTxt.toByteArray(Charset.defaultCharset())
         repository.sendByteData(byteArr)
         Util.showNotification("Wysłano dane!")
-        Log.d("wysłąno","wysłano")
     }
 }

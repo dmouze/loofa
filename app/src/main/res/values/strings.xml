@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">LufaNaLezaco</string>
-    <string name="connect">connect</string>
-    <string name="disconnect">disconnect</string>
+    <string name="connect">Połącz z lejem</string>
+    <string name="disconnect">Rozłącz</string>
 </resources>
