@@ -2,4 +2,5 @@
     <string name="app_name">LufaNaLezaco</string>
     <string name="connect">Połącz z lejem</string>
     <string name="disconnect">Rozłącz</string>
+    <string name="connect_text">Na co czekasz? Połącz się z lejem i zaspokój lokalnych alkoholików jego mocą</string>
 </resources>

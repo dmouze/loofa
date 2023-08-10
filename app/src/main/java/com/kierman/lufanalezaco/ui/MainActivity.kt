@@ -136,10 +136,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onPause() {
         super.onPause()
         viewModel.unregisterReceiver()
@@ -147,7 +143,7 @@ class MainActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        //super.onBackPressed()
+        super.onBackPressed()
         viewModel.setInProgress(false)
     }
 }
