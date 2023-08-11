@@ -35,6 +35,7 @@ class LufaViewModel(private val repository: Repository): ViewModel() {
     val putTxt: LiveData<String>
         get() = repository.putTxt
 
+
     fun setInProgress(en: Boolean){
         repository.inProgress.value = Event(en)
     }

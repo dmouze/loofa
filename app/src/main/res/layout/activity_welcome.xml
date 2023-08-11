@@ -17,22 +17,48 @@
         android:background="@color/white">
 
 
-        <Button
-            android:id="@+id/button"
+        <TextView
+            android:id="@+id/timeTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="00:000"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="60sp"
+            app:layout_constraintBottom_toTopOf="@+id/reset"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/startStopButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="zapal"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="start"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/resetButton"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/resetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="reset"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/startStopButton"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="zgas"
+            android:layout_marginBottom="208dp"
+            android:text="RESET"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

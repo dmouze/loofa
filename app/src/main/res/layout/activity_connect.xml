@@ -45,6 +45,32 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="SpeakableTextPresentCheck" />
 
+        <ImageView
+            android:id="@+id/listimg"
+            android:layout_width="111dp"
+            android:layout_height="89dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/list" />
+
+        <TextView
+            android:id="@+id/listtxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Tablica wyników"
+            android:shadowColor="#FFFFFF"
+            android:shadowDx="1.5"
+            android:shadowDy="4"
+            android:shadowRadius="1.6"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/listimg"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <LinearLayout
@@ -99,32 +125,6 @@
             app:layout_constraintVertical_bias="0.721"
             tools:ignore="TextSizeCheck" />
 
-        <ImageView
-            android:id="@+id/listimg"
-            android:layout_width="111dp"
-            android:layout_height="89dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/list" />
-
-        <TextView
-            android:id="@+id/listtxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
-            android:fontFamily="@font/poppins_medium"
-            android:text="Tablica wyników"
-            android:shadowColor="#FFFFFF"
-            android:shadowDx="1.5"
-            android:shadowDy="4"
-            android:shadowRadius="1.6"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/listimg"
-            app:layout_constraintStart_toStartOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

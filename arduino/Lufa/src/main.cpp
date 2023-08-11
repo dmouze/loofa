@@ -5,35 +5,52 @@
 #endif
 
 BluetoothSerial SerialBT;
-int received;         // odebrana zmienna
-char receivedChar;    // zmienna przechowywana jako char
-const int ledPin = 2; // wyjscie drugie jako LED
+int received;
+char receivedChar;
+const int ledPin = 2;
+const int signalPin = 4;
 
-void setup()
-{
+bool buttonPressed = false;  // Zmienna przechowująca stan przycisku
+
+void setup() {
   Serial.begin(115200);
-  SerialBT.begin("LufaNaLezaco"); // nazwa urządzenia Bluetooth
-  pinMode(ledPin, OUTPUT);        // pin LED jako wyjscie
+  SerialBT.begin("LufaNaLezaco");
+  pinMode(ledPin, OUTPUT);
+  pinMode(signalPin, INPUT);
 }
 
-void loop()
-{
-  if (Serial.available())
-  {
+void loop() {
+  int pushButtonState = digitalRead(signalPin);
+  
+  if (Serial.available()) {
     SerialBT.write(Serial.read());
   }
 
-  if (SerialBT.available())
-  {
+  if (pushButtonState == HIGH && !buttonPressed) {
+    // Jeśli przycisk został wcześniej zwolniony, to go teraz wciśnięto
+    digitalWrite(ledPin, HIGH);
+    SerialBT.write('a');
+    
+    buttonPressed = true;
+    Serial.println("Wysłano 'a'");
+  }
+  
+  if (pushButtonState == LOW && buttonPressed){
+    // Jeśli przycisk został wcześniej wciśnięty, to go teraz zwolniono
+    digitalWrite(ledPin, LOW);
+    SerialBT.write('b');
+    buttonPressed = false;
+    Serial.println("Wysłano 'b'");
+  }
+
+  if (SerialBT.available()) {
     receivedChar = SerialBT.read();
 
-    if (receivedChar == 'a')
-    {
+    if (receivedChar == 'b') {
       digitalWrite(ledPin, HIGH);
     }
 
-    if (receivedChar == 'b')
-    {
+    if (receivedChar == 'a') {
       digitalWrite(ledPin, LOW);
     }
   }

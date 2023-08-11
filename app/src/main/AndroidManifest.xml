@@ -33,6 +33,10 @@
             android:name="com.kierman.lufanalezaco.ui.MainActivity"
             android:windowSoftInputMode="adjustNothing">
         </activity>
+        <service
+            android:name="com.kierman.lufanalezaco.util.TimerService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>
