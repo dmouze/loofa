@@ -1,4 +1,4 @@
-package com.kierman.lufanalezaco
+package com.kierman.lufanalezaco.viewmodel
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.kierman.lufanalezaco.MyApplication
 import com.kierman.lufanalezaco.util.Event
 import com.kierman.lufanalezaco.util.SPP_UUID
 import com.kierman.lufanalezaco.util.Util

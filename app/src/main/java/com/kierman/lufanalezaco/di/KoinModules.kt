@@ -1,6 +1,6 @@
 package com.kierman.lufanalezaco.di
 
-import com.kierman.lufanalezaco.Repository
+import com.kierman.lufanalezaco.viewmodel.Repository
 import com.kierman.lufanalezaco.viewmodel.LufaViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

@@ -5,7 +5,6 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kierman.lufanalezaco.Repository
 import com.kierman.lufanalezaco.util.Event
 import com.kierman.lufanalezaco.util.Util
 import java.nio.charset.Charset

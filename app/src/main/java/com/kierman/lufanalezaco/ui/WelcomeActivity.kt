@@ -49,9 +49,6 @@ class WelcomeActivity : AppCompatActivity() {
             R.layout.activity_welcome
         )
 
-        binding.startStopButton.setOnClickListener { startTimer() }
-        binding.resetButton.setOnClickListener { stopTimer() }
-
         val reset = findViewById<Button>(R.id.reset)
 
         viewModel.putTxt.observe(this) { newReceivedData ->
