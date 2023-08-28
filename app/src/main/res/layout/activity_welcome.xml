@@ -26,7 +26,7 @@
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="60sp"
-            app:layout_constraintBottom_toTopOf="@+id/userListRecyclerView"
+            app:layout_constraintBottom_toTopOf="@+id/userList"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.100000024"
             tools:layout_editor_absoluteX="16dp" />
@@ -41,7 +41,7 @@
             app:layout_constraintTop_toBottomOf="@+id/timeTV" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/userListRecyclerView"
+            android:id="@+id/userList"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"

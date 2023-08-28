@@ -1,42 +1,42 @@
 package com.kierman.lufanalezaco.ui
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.kierman.lufanalezaco.R
 import com.kierman.lufanalezaco.databinding.ActivityWelcomeBinding
 import com.kierman.lufanalezaco.util.TimerService
+import com.kierman.lufanalezaco.viewmodel.FirebaseRepo
 import com.kierman.lufanalezaco.viewmodel.LufaViewModel
+import com.kierman.lufanalezaco.viewmodel.UserModel
+import com.kierman.lufanalezaco.viewmodel.UserViewHolder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 @Suppress("DEPRECATION")
 class WelcomeActivity : AppCompatActivity() {
 
-    private val viewModel by viewModel<LufaViewModel>()
     private var recv: String = ""
     private var timerStarted = false
     private lateinit var serviceIntent: Intent
     private var time = 0.0
     private lateinit var binding: ActivityWelcomeBinding
-
-    private val startForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                viewModel.onClickConnect()
-            }
-        }
+    private lateinit var adapter: FirestoreRecyclerAdapter<UserModel, UserViewHolder>
+    private val viewModel by viewModel<LufaViewModel>()
+    private val firebaseRepo = FirebaseRepo()
 
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -48,6 +48,8 @@ class WelcomeActivity : AppCompatActivity() {
             this,
             R.layout.activity_welcome
         )
+
+        binding.userList.layoutManager = LinearLayoutManager(this)
 
         val reset = findViewById<Button>(R.id.reset)
 
@@ -77,7 +79,36 @@ class WelcomeActivity : AppCompatActivity() {
 
         binding.viewModel = viewModel
 
+        val options = FirestoreRecyclerOptions.Builder<UserModel>()
+            .setQuery(firebaseRepo.getUsersCollection(), UserModel::class.java)
+            .build()
+
+        adapter = object : FirestoreRecyclerAdapter<UserModel, UserViewHolder>(options) {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
+                val itemView = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.user_list_item, parent, false)
+                return UserViewHolder(itemView)
+            }
+
+            override fun onBindViewHolder(holder: UserViewHolder, position: Int, model: UserModel) {
+                holder.bind(model)
+            }
+        }
+
+        binding.userList.adapter = adapter
     }
+
+    override fun onStart() {
+        super.onStart()
+        adapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        adapter.stopListening()
+    }
+
+
 
     private fun resetTimer() {
         stopTimer()
