@@ -3,11 +3,10 @@
     <data>
     </data>
     <LinearLayout
-        style="@style/NoShadowItem"
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:gravity="center">
 
             <TextView
                 android:id="@+id/userNameTextView"
@@ -18,7 +17,7 @@
                 android:elevation="0sp"
                 android:text=""
                 android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                android:textSize="30sp" />
 
     </LinearLayout>
 </layout>

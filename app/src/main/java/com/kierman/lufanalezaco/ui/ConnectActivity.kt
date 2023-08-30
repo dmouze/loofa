@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,7 +23,7 @@ import com.kierman.lufanalezaco.viewmodel.LufaViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @Suppress("DEPRECATION")
-class MainActivity : AppCompatActivity() {
+class ConnectActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<LufaViewModel>()
 
@@ -33,9 +34,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
-        val binding = DataBindingUtil.setContentView(this, R.layout.activity_connect) as ActivityConnectBinding
+        val binding = DataBindingUtil.setContentView(
+            this,
+            R.layout.activity_connect
+        ) as ActivityConnectBinding
 
         binding.viewModel = viewModel
+
+        val lista = findViewById<ImageView>(R.id.listimg)
+
+        lista.setOnClickListener {
+            showUserPopup()
+        }
 
 
         if (!hasPermissions(this, PERMISSIONS)) {
@@ -43,12 +53,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         initObserving()
+
+
     }
 
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             viewModel.onClickConnect()
         }
+    }
+
+    private fun showUserPopup() {
+        val userListFragment = UserListFragment()
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        transaction.add(android.R.id.content, userListFragment) // Dodaj fragment do głównego kontenera
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun initObserving() {

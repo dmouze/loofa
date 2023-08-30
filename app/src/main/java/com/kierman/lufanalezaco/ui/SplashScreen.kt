@@ -49,7 +49,7 @@ class SplashScreen : AppCompatActivity() {
         introLogo.animate().setDuration(splashScreenDuration / 2).alpha(1f).withEndAction {
             handler = Handler()
             handler.postDelayed({
-                val nextActivity = MainActivity::class.java
+                val nextActivity = ConnectActivity::class.java
                 val intent = Intent(this, nextActivity)
                 startActivity(intent)
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.slide_out_right)
