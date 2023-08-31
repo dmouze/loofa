@@ -21,7 +21,8 @@ class FirebaseRepo {
                 for (document in task.result!!) {
                     val imie = document.getString("imie") ?: ""
                     val czas = document.get("czas") as? List<String> ?: emptyList()
-                    val menel = UserModel(imie, czas)
+                    val id = document.getString("id") ?: ""
+                    val menel = UserModel(id, imie, czas)
                     userList.add(menel)
                 }
                 callback(userList)

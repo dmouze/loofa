@@ -45,7 +45,7 @@
             android:text="DODAJ NOWEGO MENELA"
             android:textColor="@color/black"
             android:textSize="40sp"
-            app:layout_constraintBottom_toTopOf="@+id/nazwa"
+            app:layout_constraintBottom_toTopOf="@+id/tlo_nazwa"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -74,7 +74,7 @@
             tools:ignore="SpeakableTextPresentCheck" />
 
         <ImageView
-            android:id="@+id/nazwa"
+            android:id="@+id/tlo_nazwa"
             android:layout_width="300sp"
             android:layout_height="50sp"
             android:visibility="visible"
@@ -90,21 +90,19 @@
             android:id="@+id/imie_menela"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
-            android:inputType="text"
-            android:hint="Tutaj wpisz imię"
-            android:textColorHint="@drawable/selector"
-            android:textAlignment="center"
             android:fontFamily="@font/poppins_medium"
-            android:textColor="@color/black"
+            android:hint="Tutaj wpisz imię"
+            android:inputType="text"
             android:minHeight="48dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/nazwa"
-            app:layout_constraintStart_toStartOf="@id/nazwa"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textColorHint="@drawable/selector"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/tlo_nazwa"
+            app:layout_constraintEnd_toEndOf="@id/tlo_nazwa"
+            app:layout_constraintStart_toStartOf="@id/tlo_nazwa"
+            app:layout_constraintTop_toTopOf="@id/tlo_nazwa"
             tools:ignore="SpeakableTextPresentCheck" />
 
 

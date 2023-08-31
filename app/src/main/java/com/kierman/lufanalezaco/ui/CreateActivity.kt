@@ -45,9 +45,20 @@ class CreateActivity : AppCompatActivity() {
              )
 
             db.collection("menele").add(userMap)
-                .addOnSuccessListener {
-                    Toast.makeText(this,"Menel dodany!",Toast.LENGTH_SHORT).show()
-                    imie.text.clear()
+                .addOnSuccessListener { documentReference ->
+                    val sId = documentReference.id
+                    // Aktualizuj mapę, przypisując wygenerowane ID dokumentu
+                    userMap["id"] = sId
+
+                    // Aktualizuj dokument w bazie danych
+                    documentReference.update(userMap as Map<String, Any>)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Menel dodany!", Toast.LENGTH_SHORT).show()
+                            imie.text.clear()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Wystąpił problem...", Toast.LENGTH_SHORT).show()
+                        }
                 }
                 .addOnFailureListener{
                     Toast.makeText(this,"Wystąpił problem...",Toast.LENGTH_SHORT).show()
