@@ -44,7 +44,8 @@ class ConnectActivity : AppCompatActivity() {
         val lista = findViewById<ImageView>(R.id.listimg)
 
         lista.setOnClickListener {
-            showUserPopup()
+            val intent = Intent(this, ChooseActivity::class.java)
+            startActivity(intent)
         }
 
 
@@ -63,14 +64,6 @@ class ConnectActivity : AppCompatActivity() {
         }
     }
 
-    private fun showUserPopup() {
-        val userListFragment = UserListFragment()
-        val fragmentManager = supportFragmentManager
-        val transaction = fragmentManager.beginTransaction()
-        transaction.add(android.R.id.content, userListFragment) // Dodaj fragment do głównego kontenera
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
 
     private fun initObserving() {
         // Obserwowanie postępu

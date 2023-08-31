@@ -61,14 +61,6 @@ class LufaViewModel(private val repository: Repository): ViewModel() {
         }
     }
 
-    fun zapalLed(){
-        onClickSendData("a")
-    }
-
-    fun zgasLed(){
-        onClickSendData("b")
-    }
-
     fun unregisterReceiver(){
         repository.unregisterReceiver()
     }

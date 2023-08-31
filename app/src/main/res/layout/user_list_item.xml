@@ -2,22 +2,30 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
     </data>
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        style="@style/NoShadowItem"
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:layout_margin="8dp">
+
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/userNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
                 android:background="@color/white"
-                android:elevation="0sp"
                 android:text=""
+                android:elevation="0sp"
+                android:textSize="18sp"
                 android:textColor="@android:color/black"
-                android:textSize="30sp" />
-
-    </LinearLayout>
+                android:layout_marginBottom="4dp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </layout>

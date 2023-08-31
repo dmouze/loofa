@@ -51,7 +51,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_connect"
+            android:id="@+id/btn_add_menel"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -59,18 +59,18 @@
             android:background="@drawable/button_back"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:text="@string/gotowe"
             android:shadowColor="@color/black"
             android:shadowDx="1.5"
             android:shadowDy="4"
             android:shadowRadius="1.6"
+            android:text="@string/gotowe"
             android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/plain_text_input"
-            app:layout_constraintVertical_bias="0.13999999"
+            app:layout_constraintTop_toBottomOf="@+id/imie_menela"
+            app:layout_constraintVertical_bias="0.52"
             tools:ignore="SpeakableTextPresentCheck" />
 
         <ImageView
@@ -87,11 +87,19 @@
             tools:visibility="visible" />
 
         <EditText
-            android:id="@+id/plain_text_input"
-            android:background="@android:color/transparent"
+            android:id="@+id/imie_menela"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
             android:inputType="text"
+            android:hint="Tutaj wpisz imię"
+            android:textColorHint="@drawable/selector"
+            android:textAlignment="center"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/black"
             android:minHeight="48dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/nazwa"

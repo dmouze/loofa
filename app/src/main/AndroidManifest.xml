@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -16,9 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LufaNaLezaco" >
         <activity
-            android:name=".ui.CreateOrChoose"
+            android:name=".ui.CreateActivity"
             android:exported="false"
-            android:label="@string/title_activity_create_or_choose"
+            android:label="@string/title_activity_create"
             android:theme="@style/Theme.LufaNaLezaco" />
         <activity
             android:name=".ui.SplashScreen"
@@ -32,6 +33,10 @@
         </activity>
         <activity
             android:name=".ui.WelcomeActivity"
+            android:windowSoftInputMode="adjustNothing" >
+        </activity>
+        <activity
+            android:name=".ui.ChooseActivity"
             android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity

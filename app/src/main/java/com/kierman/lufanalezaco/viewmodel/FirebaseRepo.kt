@@ -1,5 +1,6 @@
 package com.kierman.lufanalezaco.viewmodel
 
+import UserModel
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -8,7 +9,8 @@ class FirebaseRepo {
 
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    fun getUsersCollection(): Query {
+
+    private fun getUsersCollection(): Query {
         return firestore.collection("menele")
     }
 
@@ -17,13 +19,14 @@ class FirebaseRepo {
             if (task.isSuccessful) {
                 val userList: MutableList<UserModel> = mutableListOf()
                 for (document in task.result!!) {
-                    val userName = document.getString("imie") ?: ""
-                    val user = UserModel(userName)
-                    userList.add(user)
+                    val imie = document.getString("imie") ?: ""
+                    val czas = document.get("czas") as? List<String> ?: emptyList()
+                    val menel = UserModel(imie, czas)
+                    userList.add(menel)
                 }
                 callback(userList)
             } else {
-                Log.d("bład","nie udało się pobrać danych")
+                Log.d("error", "Failed to retrieve data")
             }
         }
     }
