@@ -4,13 +4,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
     </data>
-    <androidx.cardview.widget.CardView
-        style="@style/NoShadowItem"
-        android:elevation="0sp"
-        android:background="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             style="@style/NoShadowItem"
@@ -23,7 +16,7 @@
 
 
             <TextView
-                android:id="@+id/userNameTextView"
+                android:id="@+id/resultTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -38,5 +31,4 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
 </layout>

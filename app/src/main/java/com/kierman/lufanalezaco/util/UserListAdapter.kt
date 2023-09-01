@@ -29,15 +29,15 @@ class UserListAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: UserModel) {
-            binding.userNameTextView.text = user.name
+            binding.userNameTextView.text = user.imie
 
             binding.root.setOnClickListener {
-                itemClickListener.onItemClick(user.id) // Pass the document ID to the listener
+                itemClickListener.onItemClick(user) // Pass the document ID to the listener
             }
         }
     }
 
     interface ItemClickListener {
-        fun onItemClick(documentId: String)
+        fun onItemClick(user: UserModel)
     }
 }

@@ -1,5 +1,5 @@
 data class UserModel(
     val id: String = "",
-    val name: String = "",
+    val imie: String = "",
     val czas: List<String> = emptyList()
 )
