@@ -19,10 +19,10 @@ class FirebaseRepo {
             if (task.isSuccessful) {
                 val userList: MutableList<UserModel> = mutableListOf()
                 for (document in task.result!!) {
-                    val imie = document.getString("imie") ?: ""
-                    val czas = document.get("czas") as? List<String> ?: emptyList()
+                    val name = document.getString("imie") ?: ""
+                    val time = document.get("czas") as? List<String> ?: emptyList()
                     val id = document.getString("id") ?: ""
-                    val menel = UserModel(id, imie, czas)
+                    val menel = UserModel(id, name, time)
                     userList.add(menel)
                 }
                 callback(userList)

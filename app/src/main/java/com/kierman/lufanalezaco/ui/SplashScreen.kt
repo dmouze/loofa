@@ -7,6 +7,8 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.kierman.lufanalezaco.R
@@ -23,6 +25,10 @@ class SplashScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_splashscreen)
 
         val introLogo = findViewById<ImageView>(R.id.intro_icon)

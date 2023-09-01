@@ -8,6 +8,8 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -37,6 +39,10 @@ class WelcomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
         binding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_welcome
@@ -73,15 +79,6 @@ class WelcomeActivity : AppCompatActivity() {
         binding.viewModel = viewModel
 
     }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
 
 
     private fun resetTimer() {

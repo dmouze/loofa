@@ -1,11 +1,13 @@
 @file:Suppress("DEPRECATION")
 
 package com.kierman.lufanalezaco.ui
+
 import UserModel
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.widget.ListView
 import android.widget.TextView
@@ -27,10 +29,14 @@ class ChooseActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChooseBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
+        setContentView(binding.root)
+
+
 
         repo = FirebaseRepo()
 
@@ -48,8 +54,8 @@ class ChooseActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
     }
 
     override fun onItemClick(user: UserModel) {
-        val results = user.czas
-        val imie = user.imie
+        val results = user.time
+        val imie = user.name
         showResultsDialog(results, imie)
     }
 
@@ -63,6 +69,7 @@ class ChooseActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
 
         attributes?.width = WindowManager.LayoutParams.MATCH_PARENT
         attributes?.height = WindowManager.LayoutParams.WRAP_CONTENT
+        window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
         attributes?.y = resources.getDimensionPixelSize(R.dimen.bottom_margin)
 
@@ -70,10 +77,35 @@ class ChooseActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         titleTextView.text = "Wyniki menela: $imie"
 
         val listView = dialog.findViewById<ListView>(R.id.resultListView)
-        val adapter = ResultsAdapter(results)
+
+        // Wyszukaj najlepszy wynik (najkrótszy czas)
+        val bestResult = results // Usuń nulle z listy wyników
+            .filter { it.isNotBlank() } // Usuń puste ciągi znaków
+            .minByOrNull { time ->
+                val parts = time.split(":")
+                val seconds = parts[0].toInt() * 60 + parts[1].toInt()
+                seconds
+            }
+
+        val otherResults = results // Usuń nulle z listy wyników
+            .filter { it.isNotBlank() } // Usuń puste ciągi znaków
+            .filter { it != bestResult } // Usuń najlepszy wynik
+            .toMutableList()
+            .asReversed()
+
+
+        val bestResultWithEmoji = bestResult?.let { "🥇$it" } ?: ""
+        val sortedResults = mutableListOf<String>()
+        if (bestResult != null) {
+            sortedResults.add(bestResultWithEmoji)
+        }
+        sortedResults.addAll(otherResults)
+
+        val adapter = ResultsAdapter(sortedResults)
         listView.adapter = adapter
 
         dialog.show()
     }
+
 
 }
