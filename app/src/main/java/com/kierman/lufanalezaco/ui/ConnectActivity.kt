@@ -50,7 +50,7 @@ class ConnectActivity : AppCompatActivity() {
         val lista = findViewById<ImageView>(R.id.listimg)
 
         lista.setOnClickListener {
-            val intent = Intent(this, ChooseActivity::class.java)
+            val intent = Intent(this, RankingActivity::class.java)
             startActivity(intent)
         }
 
@@ -99,7 +99,7 @@ class ConnectActivity : AppCompatActivity() {
                     viewModel.setInProgress(false)
                     viewModel.btnConnected.set(true)
                     Util.showNotification("Urządzenie zostało połączone.")
-                    val intent = Intent(this, WelcomeActivity::class.java)
+                    val intent = Intent(this, TimerActivity::class.java)
                     startActivity(intent)
                 } else {
                     viewModel.setInProgress(false)

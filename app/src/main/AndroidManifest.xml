@@ -32,11 +32,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.WelcomeActivity"
+            android:name=".ui.TimerActivity"
             android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity
-            android:name=".ui.ChooseActivity"
+            android:name=".ui.RankingActivity"
             android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity

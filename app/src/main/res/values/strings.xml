@@ -48,4 +48,11 @@
     <string name="gotowe">GOTOWE</string>
     <string name="ranking_meneli">Ranking meneli</string>
     <string name="lista">lista</string>
+    <string name="imie">Imie</string>
+    <string name="wybrana_osoba">Wybrana osoba:</string>
+    <string name="textview">TextView</string>
+    <string name="ostatnie_podej_cie">OSTATNIE PODEJŚCIE</string>
+    <string name="recordview">TextView</string>
+    <string name="rekord">REKORD</string>
+    <string name="zmiana">ZMIANA</string>
 </resources>
