@@ -2,6 +2,7 @@
 
 package com.kierman.lufanalezaco.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.Window
@@ -69,6 +70,9 @@ class CreateActivity : AppCompatActivity() {
                 .addOnFailureListener{
                     Toast.makeText(this,"Wystąpił problem...",Toast.LENGTH_SHORT).show()
                 }
+            val intent = Intent(this,ChoosePlayerActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
     }

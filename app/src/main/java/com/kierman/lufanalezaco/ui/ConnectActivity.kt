@@ -99,7 +99,7 @@ class ConnectActivity : AppCompatActivity() {
                     viewModel.setInProgress(false)
                     viewModel.btnConnected.set(true)
                     Util.showNotification("Urządzenie zostało połączone.")
-                    val intent = Intent(this, TimerActivity::class.java)
+                    val intent = Intent(this, ChoosePlayerActivity::class.java)
                     startActivity(intent)
                 } else {
                     viewModel.setInProgress(false)

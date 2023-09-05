@@ -40,6 +40,10 @@
             android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity
+            android:name=".ui.ChoosePlayerActivity"
+            android:label="Choose Player">
+        </activity>
+        <activity
             android:name=".ui.ConnectActivity"
             android:windowSoftInputMode="adjustNothing" >
         </activity>
