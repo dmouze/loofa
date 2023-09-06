@@ -10,7 +10,7 @@ class FirebaseRepo {
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
 
-    private fun getUsersCollection(): Query {
+    fun getUsersCollection(): Query {
         return firestore.collection("menele")
     }
 

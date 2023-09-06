@@ -106,6 +106,16 @@
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/arrow"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/baseline_arrow_forward_24" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

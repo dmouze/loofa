@@ -61,6 +61,7 @@ class ChoosePlayerActivity : AppCompatActivity(), UserListAdapter.ItemClickListe
     }
 
     override fun onItemClick(user: UserModel) {
+        repo.getUsersCollection()
         val id = user.id
         val results = user.time
         val imie = user.name

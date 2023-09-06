@@ -32,13 +32,15 @@ class ConnectActivity : AppCompatActivity() {
     var mBluetoothAdapter: BluetoothAdapter? = null
     private var recv: String = ""
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         actionBar?.hide()
         val binding = DataBindingUtil.setContentView(
             this,
@@ -47,7 +49,15 @@ class ConnectActivity : AppCompatActivity() {
 
         binding.viewModel = viewModel
 
+        val arrow = findViewById<ImageView>(R.id.arrow)
+        arrow.visibility = View.INVISIBLE
+        arrow.setOnClickListener {
+            val intent = Intent(this, ChoosePlayerActivity::class.java)
+            startActivity(intent)
+        }
+
         val lista = findViewById<ImageView>(R.id.listimg)
+
 
         lista.setOnClickListener {
             val intent = Intent(this, RankingActivity::class.java)
@@ -64,11 +74,12 @@ class ConnectActivity : AppCompatActivity() {
 
     }
 
-    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            viewModel.onClickConnect()
+    private val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                viewModel.onClickConnect()
+            }
         }
-    }
 
 
     private fun initObserving() {
@@ -101,6 +112,8 @@ class ConnectActivity : AppCompatActivity() {
                     Util.showNotification("Urządzenie zostało połączone.")
                     val intent = Intent(this, ChoosePlayerActivity::class.java)
                     startActivity(intent)
+                    val arrow = findViewById<ImageView>(R.id.arrow)
+                    arrow.visibility = View.VISIBLE
                 } else {
                     viewModel.setInProgress(false)
                     viewModel.btnConnected.set(false)
@@ -150,7 +163,8 @@ class ConnectActivity : AppCompatActivity() {
                     Toast.makeText(this, "Uprawnienia przyznane!", Toast.LENGTH_SHORT).show()
                 } else {
                     requestPermissions(permissions, REQUEST_ALL_PERMISSION)
-                    Toast.makeText(this, "Uprawnienia muszą zostać przyznane", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Uprawnienia muszą zostać przyznane", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }

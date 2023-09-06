@@ -13,9 +13,12 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.kierman.lufanalezaco.R
 import com.kierman.lufanalezaco.databinding.ActivityTimerBinding
 import com.kierman.lufanalezaco.util.TimerService
@@ -33,6 +36,8 @@ class TimerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTimerBinding
     private val viewModel by viewModel<LufaViewModel>()
     private var userId = ""
+    private var imie = ""
+    private var results = ArrayList<String>()
 
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag", "NotifyDataSetChanged")
@@ -50,9 +55,12 @@ class TimerActivity : AppCompatActivity() {
             R.layout.activity_timer
         )
 
-        val imie = intent.getStringExtra("user_name")
-        val results = intent.getStringArrayListExtra("user_results")
-        userId = intent.getStringExtra("user_id").toString()
+        FirebaseApp.initializeApp(this)
+        // Inicjalizacja Firestore
+        val firestore = FirebaseFirestore.getInstance()
+
+        getValues()
+
         val reset = findViewById<ImageView>(R.id.resetButton)
         val changeUser = findViewById<TextView>(R.id.text_change)
 
@@ -81,14 +89,6 @@ class TimerActivity : AppCompatActivity() {
             }
         }
 
-        val createUser = findViewById<TextView>(R.id.text_add)
-
-        createUser.setOnClickListener{
-            val intent = Intent(this,CreateActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-
         reset.setOnClickListener {
             resetTimer()
         }
@@ -98,6 +98,11 @@ class TimerActivity : AppCompatActivity() {
 
         binding.viewModel = viewModel
 
+    }
+    private fun getValues(){
+        imie = intent.getStringExtra("user_name")!!
+        results = intent.getStringArrayListExtra("user_results")!!
+        userId = intent.getStringExtra("user_id")!!
     }
 
     private fun resetTimer() {
@@ -110,46 +115,45 @@ class TimerActivity : AppCompatActivity() {
         serviceIntent.putExtra(TimerService.TIME_EXTRA, time)
         startService(serviceIntent)
         timerStarted = true
+
+
     }
 
     private fun stopTimer() {
         stopService(serviceIntent)
         timerStarted = false
         val formattedTime = getTimeStringFromDouble(time)
-        saveResultToFirebase(userId, formattedTime)
+        getValues()
+        saveResultToFirestore(userId, formattedTime)
+        results.add(formattedTime)
+        showResults(results,imie)
     }
 
-    private fun saveResultToFirebase(userId: String?, formattedTime: String) {
-        val databaseReference = FirebaseDatabase.getInstance().getReference("menele").child(userId.toString())
 
-        val newResultKey = databaseReference.child("czas").push().key
 
-        if (newResultKey != null) {
-            // Dodajemy nowy czas do listy wyników
-            val resultData = HashMap<String, Any>()
-            resultData[newResultKey] = formattedTime
+    private fun saveResultToFirestore(userId: String, formattedTime: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        val userDocument = firestore.collection("menele").document(userId)
 
-            // Aktualizujemy listę wyników w bazie danych
-            databaseReference.child("czas").updateChildren(resultData)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        // Wynik został pomyślnie zapisany do Firebase
-                        // Możesz dodać odpowiednią obsługę tutaj
-                    } else {
-                        // Wystąpił błąd podczas zapisu
-                        val error = task.exception
-                        if (error != null) {
-                            Log.e(TAG, "Błąd podczas zapisywania wyniku do Firebase: ${error.message}")
-                        }
-                    }
-                }
-        }
+
+        // Użyj funkcji FieldValue.arrayUnion, aby dodać nowy czas do listy wyników
+        val newTimeData =  FieldValue.arrayUnion(formattedTime)
+
+        // Aktualizuj listę wyników w dokumencie użytkownika
+        userDocument.update("czas", newTimeData)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Zapisano", Toast.LENGTH_SHORT).show()
+
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Błąd podczas zapisywania wyniku do Firestore: ${e.message}")
+            }
     }
-
 
     private val updateTime: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            time = intent.getDoubleExtra(TimerService.TIME_EXTRA, 0.0)
+            val newTime = intent.getDoubleExtra(TimerService.TIME_EXTRA, 0.0)
+            time = newTime
             binding.timeTV.text = getTimeStringFromDouble(time)
         }
     }
@@ -169,7 +173,7 @@ class TimerActivity : AppCompatActivity() {
         currentUser.text = "$imie"
 
 
-        val bestResult = results // Usuń nulle z listy wyników
+        val bestResult = results
             ?.filter { it.isNotBlank() } // Usuń puste ciągi znaków
             ?.minByOrNull { time ->
                 val parts = time.split(":")
@@ -185,18 +189,11 @@ class TimerActivity : AppCompatActivity() {
         }
 
 
-        val latestResult = results
-            ?.filter { it.isNotBlank() } // Usuń puste ciągi znaków
-            ?.maxByOrNull { time ->
-                val parts = time.split(":")
-                val seconds = parts[0].toInt() * 60 + parts[1].toInt()
-                seconds
-            }
+        val latestResult = results?.takeIf { it.isNotEmpty() }?.lastOrNull()
 
         if (latestResult != null) {
             lastTryView.text = latestResult
         } else {
-
             lastTryView.text = "Brak"
         }
     }

@@ -91,6 +91,7 @@
             android:id="@+id/current_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/boldfont"
             android:gravity="center"
             android:text="Imie"
             android:textColor="@color/white"
@@ -98,16 +99,12 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
             app:layout_constraintEnd_toEndOf="@+id/imageView3"
             app:layout_constraintStart_toStartOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/imageView3"
-            tools:fontFamily="@font/boldfont" />
+            app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
         <TextView
             android:id="@+id/text_change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
             android:fontFamily="@font/notosans"
             android:shadowColor="#FFFFFF"
             android:shadowDx="1.5"
@@ -119,31 +116,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toBottomOf="@+id/resetButton"
-            tools:fontFamily="@font/notosans" />
-
-        <TextView
-            android:id="@+id/text_add"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="48dp"
-            android:fontFamily="@font/notosans"
-            android:gravity="right"
-            android:shadowColor="#FFFFFF"
-            android:shadowDx="1.5"
-
-            android:shadowDy="4"
-            android:shadowRadius="1.6"
-            android:text="DODAJ NOWEGO WARIATA"
-            android:textColor="@color/black"
-            android:textSize="25sp"
-            app:layout_constraintBottom_toTopOf="@+id/lastTry"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toBottomOf="@+id/text_change"
-            tools:fontFamily="@font/notosans" />
+            app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
         <TextView
             android:id="@+id/rekord"
@@ -156,9 +129,9 @@
             android:shadowRadius="1.6"
             android:text="@string/rekord"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/imageView3"
+            app:layout_constraintStart_toStartOf="@+id/current_user_text"
             app:layout_constraintTop_toBottomOf="@+id/imageView3"
             app:layout_constraintVertical_bias="0.52" />
 
@@ -173,7 +146,7 @@
             android:shadowRadius="1.6"
             android:text="@string/ostatnie_podej_cie"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@+id/rekord"
             app:layout_constraintEnd_toEndOf="@+id/text_change"
             app:layout_constraintTop_toTopOf="@+id/rekord" />
@@ -182,15 +155,15 @@
             android:id="@+id/recordView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:fontFamily="@font/poppins_medium"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/boldfont"
             android:shadowColor="#FFFFFF"
             android:shadowDx="1.5"
             android:shadowDy="4"
             android:shadowRadius="1.6"
             android:text="@string/recordview"
             android:textColor="@color/black"
-            android:textSize="26sp"
+            android:textSize="35sp"
             app:layout_constraintStart_toStartOf="@+id/rekord"
             app:layout_constraintTop_toBottomOf="@+id/rekord" />
 
@@ -198,15 +171,15 @@
             android:id="@+id/lastTryView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:fontFamily="@font/poppins_medium"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/boldfont"
             android:shadowColor="#FFFFFF"
             android:shadowDx="1.5"
             android:shadowDy="4"
             android:shadowRadius="1.6"
             android:text="@string/textview"
             android:textColor="@color/black"
-            android:textSize="26sp"
+            android:textSize="35sp"
             app:layout_constraintEnd_toEndOf="@+id/lastTry"
             app:layout_constraintTop_toBottomOf="@+id/lastTry" />
 
