@@ -1,9 +1,9 @@
 package com.kierman.lufanalezaco.viewmodel
 
-import UserModel
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.kierman.lufanalezaco.util.UserModel
 
 class FirebaseRepo {
 
@@ -20,7 +20,7 @@ class FirebaseRepo {
                 val userList: MutableList<UserModel> = mutableListOf()
                 for (document in task.result!!) {
                     val name = document.getString("imie") ?: ""
-                    val time = document.get("czas") as? List<String> ?: emptyList()
+                    val time = document.get("czas") as? List<Double> ?: emptyList()
                     val id = document.getString("id") ?: ""
                     val menel = UserModel(id, name, time)
                     userList.add(menel)

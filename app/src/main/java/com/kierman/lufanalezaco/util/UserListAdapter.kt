@@ -1,6 +1,5 @@
 package com.kierman.lufanalezaco.util
 
-import UserModel
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -14,24 +13,18 @@ class UserListAdapter(
     // Funkcja do znalezienia indeksu użytkownika z najlepszym wynikiem
     private fun findIndexOfBestUser(): Int {
         var bestIndex = -1
-        var bestTime = Long.MAX_VALUE // Domyślnie ustawiamy na największą możliwą wartość
+        var bestTime = Double.MAX_VALUE // Domyślnie ustawiamy na największą możliwą wartość
 
         for ((index, user) in userList.withIndex()) {
             val results = user.time
             if (results.isNotEmpty()) {
                 val bestResult = results
-                    .filter { it.isNotBlank() }
-                    .minByOrNull { time ->
-                        val parts = time.split(":")
-                        val seconds = parts[0].toInt() * 60 + parts[1].toInt()
-                        seconds
-                    }
+                    .filter { it > 0.0 } // Usuń niepoprawne wyniki
+                    .minOrNull()
 
                 bestResult?.let {
-                    val timeParts = it.split(":")
-                    val timeInSeconds = timeParts[0].toInt() * 60 + timeParts[1].toInt()
-                    if (timeInSeconds < bestTime) {
-                        bestTime = timeInSeconds.toLong()
+                    if (it < bestTime) {
+                        bestTime = it
                         bestIndex = index
                     }
                 }
@@ -70,7 +63,7 @@ class UserListAdapter(
             binding.userNameTextView.text = userNameText
 
             binding.root.setOnClickListener {
-                itemClickListener.onItemClick(user) // Pass the document ID to the listener
+                itemClickListener.onItemClick(user) // Przekazanie użytkownika do listenera
             }
         }
     }

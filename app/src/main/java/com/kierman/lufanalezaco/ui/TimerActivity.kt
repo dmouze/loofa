@@ -14,6 +14,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.google.firebase.FirebaseApp
@@ -37,7 +38,7 @@ class TimerActivity : AppCompatActivity() {
     private val viewModel by viewModel<LufaViewModel>()
     private var userId = ""
     private var imie = ""
-    private var results = ArrayList<String>()
+    private var results = ArrayList<Double>()
 
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag", "NotifyDataSetChanged")
@@ -56,14 +57,11 @@ class TimerActivity : AppCompatActivity() {
         )
 
         FirebaseApp.initializeApp(this)
-        // Inicjalizacja Firestore
-        val firestore = FirebaseFirestore.getInstance()
 
         getValues()
 
         val reset = findViewById<ImageView>(R.id.resetButton)
         val changeUser = findViewById<TextView>(R.id.text_change)
-
 
         showResults(results, imie)
 
@@ -82,8 +80,10 @@ class TimerActivity : AppCompatActivity() {
                 if (recv == "a") {
                     Log.d("setuje", "setuje")
                     startTimer()
+                    FirebaseApp.initializeApp(this)
                 } else if (recv == "b") {
                     Log.d("stop", "stop")
+                    getValues()
                     stopTimer()
                 }
             }
@@ -99,10 +99,14 @@ class TimerActivity : AppCompatActivity() {
         binding.viewModel = viewModel
 
     }
-    private fun getValues(){
+
+    private fun getValues() {
         imie = intent.getStringExtra("user_name")!!
-        results = intent.getStringArrayListExtra("user_results")!!
         userId = intent.getStringExtra("user_id")!!
+
+        // Odczytaj ArrayList<Double> zamiast DoubleArray
+        val resultArrayList = intent.getSerializableExtra("user_results") as ArrayList<Double>
+        results = resultArrayList
     }
 
     private fun resetTimer() {
@@ -114,30 +118,32 @@ class TimerActivity : AppCompatActivity() {
     private fun startTimer() {
         serviceIntent.putExtra(TimerService.TIME_EXTRA, time)
         startService(serviceIntent)
+        getValues()
         timerStarted = true
-
-
     }
 
     private fun stopTimer() {
         stopService(serviceIntent)
         timerStarted = false
-        val formattedTime = getTimeStringFromDouble(time)
-        getValues()
-        saveResultToFirestore(userId, formattedTime)
-        results.add(formattedTime)
-        showResults(results,imie)
+        val formattedTime = time
+        if (formattedTime > 0.0) {
+            getValues()
+            saveResultToFirestore(userId, formattedTime)
+            results.add(formattedTime)
+            // Wyświetl wyniki
+            showResults(results, imie)
+        } else {
+            Log.d("TimerActivity", "Pusty wynik lub '00:000', nie zapisuj do Firestore")
+        }
     }
 
-
-
-    private fun saveResultToFirestore(userId: String, formattedTime: String) {
+    private fun saveResultToFirestore(userId: String, formattedTime: Double) {
         val firestore = FirebaseFirestore.getInstance()
         val userDocument = firestore.collection("menele").document(userId)
 
 
         // Użyj funkcji FieldValue.arrayUnion, aby dodać nowy czas do listy wyników
-        val newTimeData =  FieldValue.arrayUnion(formattedTime)
+        val newTimeData = FieldValue.arrayUnion(formattedTime)
 
         // Aktualizuj listę wyników w dokumencie użytkownika
         userDocument.update("czas", newTimeData)
@@ -148,6 +154,50 @@ class TimerActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Log.e(TAG, "Błąd podczas zapisywania wyniku do Firestore: ${e.message}")
             }
+    }
+
+
+    @SuppressLint("SetTextI18n")
+    private fun showResults(results: ArrayList<Double>?, imie: String?) {
+        val currentUser = findViewById<TextView>(R.id.current_user)
+        val recordView = findViewById<TextView>(R.id.recordView)
+        val lastTryView = findViewById<TextView>(R.id.lastTryView)
+        currentUser.text = "$imie"
+
+        // Wybierz ostatni wynik
+        val latestResult = results?.takeIf { it.isNotEmpty() }?.lastOrNull()
+
+        val showLatestResult = latestResult?.let { getTimeStringFromDouble(it) }
+
+        if (latestResult != null) {
+            lastTryView.text = showLatestResult?.let { formatTime(it) }
+        } else {
+            lastTryView.text = "Brak"
+        }
+
+        // Wybierz najlepszy wynik (najbliższy 0)
+        val bestResult = results
+            ?.filter { it > 0.0 }
+            ?.minByOrNull { time ->
+                val seconds = (time * 60).toInt()
+                val milliseconds = ((time - seconds / 60.0) * 1000).toInt()
+                seconds * 1000 + milliseconds
+            }
+        val showBestTime = bestResult?.let { getTimeStringFromDouble(it) }
+
+        if (bestResult != null) {
+            recordView.text = showBestTime?.let { formatTime(it) }
+        } else {
+            // Obsłuż przypadek, gdy nie ma żadnych wyników
+            recordView.text = "Brak"
+        }
+    }
+
+    private fun formatTime(time: String): String {
+        val parts = time.split(":")
+        val seconds = parts[0].toInt()
+        val milliseconds = parts[1].toInt()
+        return String.format("%02d:%03d", seconds, milliseconds)
     }
 
     private val updateTime: BroadcastReceiver = object : BroadcastReceiver() {
@@ -161,43 +211,6 @@ class TimerActivity : AppCompatActivity() {
     private fun getTimeStringFromDouble(time: Double): String {
         val seconds = time.toInt()
         val milliseconds = ((time - seconds) * 1000).toInt()
-        return makeTimeString(seconds, milliseconds)
+        return String.format("%02d:%03d", seconds, milliseconds)
     }
-
-    @SuppressLint("InflateParams", "SetTextI18n")
-    private fun showResults(results: ArrayList<String>?, imie: String?) {
-
-        val currentUser = findViewById<TextView>(R.id.current_user)
-        val recordView = findViewById<TextView>(R.id.recordView)
-        val lastTryView = findViewById<TextView>(R.id.lastTryView)
-        currentUser.text = "$imie"
-
-
-        val bestResult = results
-            ?.filter { it.isNotBlank() } // Usuń puste ciągi znaków
-            ?.minByOrNull { time ->
-                val parts = time.split(":")
-                val seconds = parts[0].toInt() * 60 + parts[1].toInt()
-                seconds
-            }
-
-        if (bestResult != null) {
-            recordView.text = bestResult
-        } else {
-            // Obsłuż przypadek, gdy nie ma żadnych wyników
-            recordView.text = "Brak"
-        }
-
-
-        val latestResult = results?.takeIf { it.isNotEmpty() }?.lastOrNull()
-
-        if (latestResult != null) {
-            lastTryView.text = latestResult
-        } else {
-            lastTryView.text = "Brak"
-        }
-    }
-
-    private fun makeTimeString(sec: Int, milisec: Int): String =
-        String.format("%02d:%03d", sec, milisec)
 }

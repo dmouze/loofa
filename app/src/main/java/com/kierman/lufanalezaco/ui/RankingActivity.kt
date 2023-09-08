@@ -2,7 +2,6 @@
 
 package com.kierman.lufanalezaco.ui
 
-import UserModel
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
@@ -17,6 +16,7 @@ import com.kierman.lufanalezaco.R
 import com.kierman.lufanalezaco.databinding.ActivityRankingBinding
 import com.kierman.lufanalezaco.util.ResultsAdapter
 import com.kierman.lufanalezaco.util.UserListAdapter
+import com.kierman.lufanalezaco.util.UserModel
 import com.kierman.lufanalezaco.viewmodel.FirebaseRepo
 
 class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
@@ -35,8 +35,6 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
         setContentView(binding.root)
-
-
 
         repo = FirebaseRepo()
 
@@ -60,7 +58,7 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
     }
 
     @SuppressLint("InflateParams", "SetTextI18n")
-    private fun showResultsDialog(results: List<String>, imie: String) {
+    private fun showResultsDialog(results: List<Double>, imie: String) {
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.custom_result_list)
 
@@ -79,22 +77,18 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         val listView = dialog.findViewById<ListView>(R.id.resultListView)
 
         // Wyszukaj najlepszy wynik (najkrótszy czas)
-        val bestResult = results // Usuń nulle z listy wyników
-            .filter { it.isNotBlank() } // Usuń puste ciągi znaków
-            .minByOrNull { time ->
-                val parts = time.split(":")
-                val seconds = parts[0].toInt() * 60 + parts[1].toInt()
-                seconds
-            }
+        val bestResult = results
+            .filter { it > 0 } // Usuń nulle z listy wyników
+            .minByOrNull { it }
 
-        val otherResults = results // Usuń nulle z listy wyników
-            .filter { it.isNotBlank() } // Usuń puste ciągi znaków
+        val otherResults = results
+            .filter { it > 0 } // Usuń nulle z listy wyników
             .filter { it != bestResult } // Usuń najlepszy wynik
+            .map { getTimeStringFromDouble(it) } // Konwertuj wynik na "ss:SSS"
             .toMutableList()
             .asReversed()
 
-
-        val bestResultWithEmoji = bestResult?.let { "🥇$it" } ?: ""
+        val bestResultWithEmoji = bestResult?.let { "🥇${getTimeStringFromDouble(it)}" } ?: ""
         val sortedResults = mutableListOf<String>()
         if (bestResult != null) {
             sortedResults.add(bestResultWithEmoji)
@@ -107,5 +101,10 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         dialog.show()
     }
 
+    private fun getTimeStringFromDouble(time: Double): String {
+        val seconds = time.toInt()
+        val milliseconds = ((time - seconds) * 1000).toInt()
+        return String.format("%02d:%03d", seconds, milliseconds)
+    }
 
 }

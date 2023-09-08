@@ -20,6 +20,8 @@ class LufaViewModel(private val repository: Repository): ViewModel() {
     var inProgressView = ObservableBoolean(false)
     var txtProgress: ObservableField<String> = ObservableField("")
 
+    val resultsLiveData = MutableLiveData<List<String>>()
+
     private val _requestBleOn = MutableLiveData<Event<Boolean>>()
     val requestBleOn: LiveData<Event<Boolean>>
         get() = _requestBleOn

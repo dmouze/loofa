@@ -2,7 +2,6 @@
 
 package com.kierman.lufanalezaco.ui
 
-import UserModel
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kierman.lufanalezaco.R
 import com.kierman.lufanalezaco.databinding.ActivityChoosePlayerBinding
 import com.kierman.lufanalezaco.util.UserListAdapter
+import com.kierman.lufanalezaco.util.UserModel
 import com.kierman.lufanalezaco.viewmodel.FirebaseRepo
 
 class ChoosePlayerActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
@@ -65,10 +65,11 @@ class ChoosePlayerActivity : AppCompatActivity(), UserListAdapter.ItemClickListe
         val id = user.id
         val results = user.time
         val imie = user.name
+        val resultArray: ArrayList<Double> = ArrayList(results.toList())
         val intent = Intent(this, TimerActivity::class.java)
         intent.putExtra("user_name", imie)
         intent.putExtra("user_id",id)
-        intent.putStringArrayListExtra("user_results", ArrayList(results))
+        intent.putExtra("user_results", resultArray)
         startActivity(intent)
         finish()
     }
