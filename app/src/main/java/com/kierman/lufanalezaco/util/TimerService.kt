@@ -18,7 +18,7 @@ class TimerService : Service() {
             time = it.getDoubleExtra(TIME_EXTRA, 0.0)
         }
 
-        timer.scheduleAtFixedRate(TimeTask(), 0, 10) // Aktualizacja co 10 milisekund
+        timer.scheduleAtFixedRate(TimeTask(), 0, 1) // Aktualizacja co 10 milisekund
         return START_NOT_STICKY
     }
 

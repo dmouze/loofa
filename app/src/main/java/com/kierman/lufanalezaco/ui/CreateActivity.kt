@@ -12,8 +12,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.kierman.lufanalezaco.R
 import com.kierman.lufanalezaco.databinding.ActivityCreateBinding
 
@@ -23,7 +23,8 @@ class CreateActivity : AppCompatActivity() {
     private lateinit var imie: EditText
     private lateinit var przycisk: Button
 
-    private var db = Firebase.firestore
+    private val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("menele")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,45 +45,31 @@ class CreateActivity : AppCompatActivity() {
 
         przycisk.setOnClickListener{
             val sImie = imie.text.toString().trim()
-            val sCzas = ArrayList<String>()
+            val sCzas = ArrayList<Double>()
 
-            val userMap = hashMapOf(
-                "imie" to sImie,
-                "czas" to sCzas
-             )
+            val userId = databaseReference.push().key
 
-            db.collection("menele").add(userMap)
-                .addOnSuccessListener { documentReference ->
-                    val sId = documentReference.id
-                    // Aktualizuj mapę, przypisując wygenerowane ID dokumentu
-                    userMap["id"] = sId
+            if (userId != null) {
+                val userMap = hashMapOf(
+                    "id" to userId,
+                    "imie" to sImie,
+                    "czas" to sCzas
+                )
 
-                    // Aktualizuj dokument w bazie danych
-                    documentReference.update(userMap as Map<String, Any>)
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Menel dodany!", Toast.LENGTH_SHORT).show()
-                            imie.text.clear()
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Wystąpił problem...", Toast.LENGTH_SHORT).show()
-                        }
-                }
-                .addOnFailureListener{
-                    Toast.makeText(this,"Wystąpił problem...",Toast.LENGTH_SHORT).show()
-                }
-            val intent = Intent(this,ChoosePlayerActivity::class.java)
+                databaseReference.child(userId).setValue(userMap)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Menel dodany!", Toast.LENGTH_SHORT).show()
+                        imie.text.clear()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Wystąpił problem...", Toast.LENGTH_SHORT).show()
+                    }
+            }
+
+            val intent = Intent(this, ChoosePlayerActivity::class.java)
             startActivity(intent)
             finish()
         }
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
     }
 
 }

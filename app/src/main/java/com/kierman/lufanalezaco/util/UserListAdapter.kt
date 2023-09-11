@@ -17,7 +17,7 @@ class UserListAdapter(
 
         for ((index, user) in userList.withIndex()) {
             val results = user.time
-            if (results.isNotEmpty()) {
+            if (results!!.isNotEmpty()) {
                 val bestResult = results
                     .filter { it > 0.0 } // Usuń niepoprawne wyniki
                     .minOrNull()

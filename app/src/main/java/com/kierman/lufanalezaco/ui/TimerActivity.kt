@@ -7,8 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.Window
@@ -16,18 +14,15 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.google.firebase.FirebaseApp
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.*
 import com.kierman.lufanalezaco.R
 import com.kierman.lufanalezaco.databinding.ActivityTimerBinding
 import com.kierman.lufanalezaco.util.TimerService
 import com.kierman.lufanalezaco.viewmodel.LufaViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 @Suppress("DEPRECATION")
 class TimerActivity : AppCompatActivity() {
@@ -41,9 +36,6 @@ class TimerActivity : AppCompatActivity() {
     private var userId = ""
     private var imie = ""
     private var results = ArrayList<Double>()
-    private lateinit var alertDialog: AlertDialog
-
-
     @SuppressLint("UnspecifiedRegisterReceiverFlag", "NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,13 +55,6 @@ class TimerActivity : AppCompatActivity() {
 
         getValues()
 
-        showCountdownDialog()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (alertDialog.isShowing) {
-                alertDialog.dismiss()
-            }
-        }, 5000) // 5000 ms (5 sekund)
 
         val reset = findViewById<ImageView>(R.id.resetButton)
         val changeUser = findViewById<TextView>(R.id.text_change)
@@ -83,22 +68,18 @@ class TimerActivity : AppCompatActivity() {
         }
 
         viewModel.putTxt.observe(this) { newReceivedData ->
-            if (newReceivedData != null) {
-                if (!alertDialog.isShowing) {
+            if (newReceivedData != null)  {
                     recv = newReceivedData
                     viewModel.txtRead.set(recv)
-                    Log.d("dostałem", recv)
 
                     if (recv == "a") {
-                        Log.d("setuje", "setuje")
                         startTimer()
                         FirebaseApp.initializeApp(this)
                     } else if (recv == "b") {
-                        Log.d("stop", "stop")
                         getValues()
                         stopTimer()
                     }
-                }
+
             }
         }
 
@@ -110,16 +91,8 @@ class TimerActivity : AppCompatActivity() {
         registerReceiver(updateTime, IntentFilter(TimerService.TIMER_UPDATED))
 
         binding.viewModel = viewModel
-
     }
 
-    private fun showCountdownDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage("Trwa pobieranie danych z bazy danych, proszę czekać...")
-
-        alertDialog = builder.create()
-        alertDialog.show()
-    }
 
     private fun getValues() {
         imie = intent.getStringExtra("user_name")!!
@@ -149,40 +122,37 @@ class TimerActivity : AppCompatActivity() {
         val formattedTime = time
         if (formattedTime > 0.0) {
             getValues()
-            saveResultToFirestore(userId, formattedTime)
+            saveResultToRealtimeDatabase(
+                userId,
+                formattedTime
+            ) // Zaktualizowano na Firebase Realtime Database
             results.add(formattedTime)
             // Wyświetl wyniki
             showResults(results, imie)
-        } else {
-            Log.d("TimerActivity", "Pusty wynik lub '00:000', nie zapisuj do Firestore")
         }
     }
 
-    private fun saveResultToFirestore(userId: String, formattedTime: Double) {
-        val firestore = FirebaseFirestore.getInstance()
-        val userDocument = firestore.collection("menele").document(userId)
+    private fun saveResultToRealtimeDatabase(userId: String, formattedTime: Double) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("menele")
+        val userReference = databaseReference.child(userId)
 
-
-        // Użyj funkcji FieldValue.arrayUnion, aby dodać nowy czas do listy wyników
-        val newTimeData = FieldValue.arrayUnion(formattedTime)
-
-        // Aktualizuj listę wyników w dokumencie użytkownika
-        userDocument.update("czas", newTimeData)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Zapisano", Toast.LENGTH_SHORT).show()
-
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Błąd podczas zapisywania wyniku do Firestore: ${e.message}")
-            }
+        if (formattedTime > 0.0) {
+            userReference.child("czas").push().setValue(formattedTime)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Zapisano", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Błąd podczas zapisywania wyniku do Realtime Database: ${e.message}")
+                }
+        }
     }
-
 
     @SuppressLint("SetTextI18n")
     private fun showResults(results: ArrayList<Double>?, imie: String?) {
         val currentUser = findViewById<TextView>(R.id.current_user)
         val recordView = findViewById<TextView>(R.id.recordView)
         val lastTryView = findViewById<TextView>(R.id.lastTryView)
+        val timer = findViewById<TextView>(R.id.timeTV)
         currentUser.text = "$imie"
 
         // Wybierz ostatni wynik
@@ -192,6 +162,7 @@ class TimerActivity : AppCompatActivity() {
 
         if (latestResult != null) {
             lastTryView.text = showLatestResult?.let { formatTime(it) }
+            timer.text = showLatestResult?.let { formatTime(it) }
         } else {
             lastTryView.text = "Brak"
         }

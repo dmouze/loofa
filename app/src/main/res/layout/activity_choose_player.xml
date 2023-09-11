@@ -58,13 +58,13 @@
                 android:elevation="0sp"
                 android:scrollbars="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toTopOf="@+id/createMenel"
+                app:layout_constraintBottom_toTopOf="@+id/add_new"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/chooseMenel" />
 
             <TextView
-                android:id="@+id/createMenel"
+                android:id="@+id/add_new"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
