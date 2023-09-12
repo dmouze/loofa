@@ -81,7 +81,7 @@
         <ImageView
             android:id="@+id/imageView3"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="80dp"
             android:layout_marginTop="8dp"
             android:minWidth="220dp"
             android:shadowColor="#FFFFFF"
@@ -101,7 +101,7 @@
             android:gravity="center"
             android:text="@string/imie"
             android:textColor="@color/white"
-            android:textSize="23sp"
+            android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
             app:layout_constraintEnd_toEndOf="@+id/imageView3"
             app:layout_constraintStart_toStartOf="@+id/imageView3"
@@ -119,17 +119,15 @@
             android:text="@string/zmiana"
             android:textColor="@color/black"
             android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/recordView"
             app:layout_constraintEnd_toEndOf="@+id/imageView3"
-            app:layout_constraintStart_toStartOf="@+id/imageView3"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3"
-            app:layout_constraintVertical_bias="0.26999998" />
+            app:layout_constraintStart_toStartOf="@+id/imageView3" />
 
         <TextView
             android:id="@+id/rekord"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
             android:fontFamily="@font/notosans"
             android:shadowColor="#FFFFFF"
             android:shadowDx="1.5"
@@ -139,7 +137,7 @@
             android:textColor="@color/black"
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
+            app:layout_constraintEnd_toStartOf="@+id/lastTry"
             app:layout_constraintTop_toTopOf="@+id/imageView3"
             tools:ignore="TextSizeCheck" />
 
@@ -147,7 +145,6 @@
             android:id="@+id/lastTry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
             android:layout_marginEnd="32dp"
             android:fontFamily="@font/notosans"
             android:shadowColor="#FFFFFF"
@@ -159,7 +156,6 @@
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="@+id/rekord"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/rekord"
             app:layout_constraintTop_toTopOf="@+id/rekord"
             app:layout_constraintVertical_bias="1.0" />
 
