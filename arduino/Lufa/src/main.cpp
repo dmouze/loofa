@@ -9,7 +9,7 @@ int received;
 char receivedChar;
 const int ledPin = 2;
 const int signalPin = 4;
-
+const int przekaznikOutput = 6;
 bool buttonPressed = false;  // Zmienna przechowująca stan przycisku
 
 void setup() {
@@ -17,6 +17,7 @@ void setup() {
   SerialBT.begin("LufaNaLezaco");
   pinMode(ledPin, OUTPUT);
   pinMode(signalPin, INPUT);
+  pinMode(przekaznikOutput, OUTPUT);
 }
 
 void loop() {
@@ -29,6 +30,7 @@ void loop() {
   if (pushButtonState == HIGH && !buttonPressed) {
     // Jeśli przycisk został wcześniej zwolniony, to go teraz wciśnięto
     digitalWrite(ledPin, HIGH);
+    digitalWrite(przekaznikOutput, HIGH);
     SerialBT.write('a');
     
     buttonPressed = true;
@@ -38,6 +40,7 @@ void loop() {
   if (pushButtonState == LOW && buttonPressed){
     // Jeśli przycisk został wcześniej wciśnięty, to go teraz zwolniono
     digitalWrite(ledPin, LOW);
+    digitalWrite(przekaznikOutput, LOW);
     SerialBT.write('b');
     buttonPressed = false;
     Serial.println("Wysłano 'b'");
