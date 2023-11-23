@@ -9,51 +9,60 @@ int received;
 char receivedChar;
 const int ledPin = 2;
 const int signalPin = 4;
-const int przekaznikOutput = 6;
-bool buttonPressed = false;  // Zmienna przechowująca stan przycisku
+const int przekaznikOutput = 16;
+bool buttonPressed = false; // Zmienna przechowująca stan przycisku
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   SerialBT.begin("LufaNaLezaco");
   pinMode(ledPin, OUTPUT);
   pinMode(signalPin, INPUT);
   pinMode(przekaznikOutput, OUTPUT);
+  digitalWrite(przekaznikOutput, HIGH);
 }
 
-void loop() {
+void loop()
+{
   int pushButtonState = digitalRead(signalPin);
-  
-  if (Serial.available()) {
+
+  if (Serial.available())
+  {
     SerialBT.write(Serial.read());
   }
 
-  if (pushButtonState == HIGH && !buttonPressed) {
+  if (pushButtonState == HIGH && !buttonPressed)
+  {
     // Jeśli przycisk został wcześniej zwolniony, to go teraz wciśnięto
     digitalWrite(ledPin, HIGH);
-    digitalWrite(przekaznikOutput, HIGH);
+    digitalWrite(przekaznikOutput, LOW);
     SerialBT.write('a');
-    
+
     buttonPressed = true;
     Serial.println("Wysłano 'a'");
   }
-  
-  if (pushButtonState == LOW && buttonPressed){
+
+  if (pushButtonState == LOW && buttonPressed)
+  {
     // Jeśli przycisk został wcześniej wciśnięty, to go teraz zwolniono
     digitalWrite(ledPin, LOW);
-    digitalWrite(przekaznikOutput, LOW);
+    digitalWrite(przekaznikOutput, HIGH);
     SerialBT.write('b');
     buttonPressed = false;
     Serial.println("Wysłano 'b'");
   }
 
-  if (SerialBT.available()) {
+  if (SerialBT.available())
+  {
     receivedChar = SerialBT.read();
 
-    if (receivedChar == 'b') {
+    if (receivedChar == 'b')
+    {
       digitalWrite(ledPin, HIGH);
     }
 
-    if (receivedChar == 'a') {
+    if (receivedChar == 'a')
+    {
       digitalWrite(ledPin, LOW);
     }
   }
