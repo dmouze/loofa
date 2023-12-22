@@ -19,7 +19,7 @@ void setup()
   pinMode(ledPin, OUTPUT);
   pinMode(signalPin, INPUT);
   pinMode(przekaznikOutput, OUTPUT);
-  digitalWrite(przekaznikOutput, HIGH);
+  digitalWrite(przekaznikOutput, LOW);
 }
 
 void loop()
@@ -35,7 +35,7 @@ void loop()
   {
     // Jeśli przycisk został wcześniej zwolniony, to go teraz wciśnięto
     digitalWrite(ledPin, HIGH);
-    digitalWrite(przekaznikOutput, LOW);
+    digitalWrite(przekaznikOutput, HIGH);
     SerialBT.write('a');
 
     buttonPressed = true;
@@ -46,7 +46,7 @@ void loop()
   {
     // Jeśli przycisk został wcześniej wciśnięty, to go teraz zwolniono
     digitalWrite(ledPin, LOW);
-    digitalWrite(przekaznikOutput, HIGH);
+    digitalWrite(przekaznikOutput, LOW);
     SerialBT.write('b');
     buttonPressed = false;
     Serial.println("Wysłano 'b'");

@@ -81,6 +81,11 @@ class ConnectActivity : AppCompatActivity() {
             }
         }
 
+    private fun sendConnectionLostBroadcast() {
+        val intent = Intent("BLUETOOTH_CONNECTION_LOST")
+        sendBroadcast(intent)
+    }
+
 
     private fun initObserving() {
         // Obserwowanie postępu
@@ -115,6 +120,7 @@ class ConnectActivity : AppCompatActivity() {
                     val arrow = findViewById<ImageView>(R.id.arrow)
                     arrow.visibility = View.VISIBLE
                 } else {
+                    sendConnectionLostBroadcast()
                     viewModel.setInProgress(false)
                     viewModel.btnConnected.set(false)
                     Util.showNotification("Połączenie z urządzeniem zostało przerwane.")

@@ -39,6 +39,7 @@ class TimerActivity : AppCompatActivity() {
     @SuppressLint("UnspecifiedRegisterReceiverFlag", "NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        registerReceiver(connectionLostReceiver, IntentFilter("BLUETOOTH_CONNECTION_LOST"))
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -93,6 +94,12 @@ class TimerActivity : AppCompatActivity() {
         binding.viewModel = viewModel
     }
 
+    private val connectionLostReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            stopTimerWhileDisconnect()
+            Toast.makeText(context, "Połączenie z urządzeniem zostało przerwane.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun getValues() {
         imie = intent.getStringExtra("user_name")!!
@@ -130,6 +137,12 @@ class TimerActivity : AppCompatActivity() {
             // Wyświetl wyniki
             showResults(results, imie)
         }
+    }
+
+    private fun stopTimerWhileDisconnect() {
+        stopService(serviceIntent)
+        timerStarted = false
+        resetTimer()
     }
 
     private fun saveResultToRealtimeDatabase(userId: String, formattedTime: Double) {
@@ -204,5 +217,10 @@ class TimerActivity : AppCompatActivity() {
         val seconds = time.toInt()
         val milliseconds = ((time - seconds) * 1000).toInt()
         return String.format("%02d:%03d", seconds, milliseconds)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(connectionLostReceiver)
     }
 }
