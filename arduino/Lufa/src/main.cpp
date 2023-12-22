@@ -11,6 +11,7 @@ const int ledPin = 2;
 const int signalPin = 4;
 const int przekaznikOutput = 16;
 bool buttonPressed = false; // Zmienna przechowująca stan przycisku
+bool cleanMode = false;
 
 void setup()
 {
@@ -24,32 +25,54 @@ void setup()
 
 void loop()
 {
-  int pushButtonState = digitalRead(signalPin);
-
-  if (Serial.available())
+  if (cleanMode == false)
   {
-    SerialBT.write(Serial.read());
+    int pushButtonState = digitalRead(signalPin);
+
+    if (Serial.available())
+    {
+      SerialBT.write(Serial.read());
+    }
+
+    if (pushButtonState == HIGH && !buttonPressed)
+    {
+      // Jeśli przycisk został wcześniej zwolniony, to go teraz wciśnięto
+      digitalWrite(ledPin, HIGH);
+      digitalWrite(przekaznikOutput, HIGH);
+      SerialBT.write('a');
+
+      buttonPressed = true;
+      Serial.println("Wysłano 'a'");
+    }
+
+    if (pushButtonState == LOW && buttonPressed)
+    {
+      // Jeśli przycisk został wcześniej wciśnięty, to go teraz zwolniono
+      digitalWrite(ledPin, LOW);
+      digitalWrite(przekaznikOutput, LOW);
+      SerialBT.write('b');
+      buttonPressed = false;
+      Serial.println("Wysłano 'b'");
+    }
+
+    
   }
-
-  if (pushButtonState == HIGH && !buttonPressed)
+  else
   {
-    // Jeśli przycisk został wcześniej zwolniony, to go teraz wciśnięto
     digitalWrite(ledPin, HIGH);
     digitalWrite(przekaznikOutput, HIGH);
-    SerialBT.write('a');
 
-    buttonPressed = true;
-    Serial.println("Wysłano 'a'");
-  }
+    if (SerialBT.available())
+    {
+      receivedChar = SerialBT.read();
 
-  if (pushButtonState == LOW && buttonPressed)
-  {
-    // Jeśli przycisk został wcześniej wciśnięty, to go teraz zwolniono
-    digitalWrite(ledPin, LOW);
-    digitalWrite(przekaznikOutput, LOW);
-    SerialBT.write('b');
-    buttonPressed = false;
-    Serial.println("Wysłano 'b'");
+      if (receivedChar == 'd')
+      {
+        cleanMode = false;
+        digitalWrite(ledPin, LOW);
+        digitalWrite(przekaznikOutput, LOW);
+      }
+    }
   }
 
   if (SerialBT.available())
@@ -65,7 +88,10 @@ void loop()
     {
       digitalWrite(ledPin, LOW);
     }
-  }
 
-  delay(20);
+    if (receivedChar == 'c')
+    {
+      cleanMode = true;
+    }
+  }
 }
