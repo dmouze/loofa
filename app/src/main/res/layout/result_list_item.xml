@@ -5,30 +5,30 @@
     <data>
     </data>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            style="@style/NoShadowItem"
-            android:elevation="0sp"
-            android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/NoShadowItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:background="@drawable/round_background_white"
+        android:elevation="0sp"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/resultTextView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/round_background_white"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-
-            <TextView
-                android:id="@+id/resultTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:elevation="0sp"
-                android:fontFamily="@font/poppins_medium"
-                android:text=""
-                android:gravity="center"
-                android:textColor="@android:color/black"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:background="@color/white"
+            android:elevation="0sp"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

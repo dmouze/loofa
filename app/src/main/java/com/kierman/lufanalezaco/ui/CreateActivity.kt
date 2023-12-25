@@ -58,7 +58,7 @@ class CreateActivity : AppCompatActivity() {
 
                 databaseReference.child(userId).setValue(userMap)
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Menel dodany!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Użytkownik dodany!", Toast.LENGTH_SHORT).show()
                         imie.text.clear()
                     }
                     .addOnFailureListener {

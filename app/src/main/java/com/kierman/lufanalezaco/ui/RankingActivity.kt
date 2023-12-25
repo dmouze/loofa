@@ -4,6 +4,8 @@ package com.kierman.lufanalezaco.ui
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.Window
@@ -77,6 +79,7 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
     @SuppressLint("InflateParams", "SetTextI18n")
     private fun showResultsDialog(results: List<Double>?, imie: String?) {
         val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // Ukrycie tytułu, jeśli istnieje
         dialog.setContentView(R.layout.custom_result_list)
 
         val window = dialog.window
@@ -86,10 +89,13 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         attributes?.height = WindowManager.LayoutParams.WRAP_CONTENT
         window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
+        // Ustawienie tła dla okna dialogowego (możesz dostosować to do swojego tła)
+        window?.setBackgroundDrawableResource(R.drawable.round_background_white)
+
         attributes?.y = resources.getDimensionPixelSize(R.dimen.bottom_margin)
 
         val titleTextView = dialog.findViewById<TextView>(R.id.resultTitleTextView)
-        titleTextView.text = "Wyniki wariaciny: $imie"
+        titleTextView.text = "Wyniki osoby: $imie"
 
         val listView = dialog.findViewById<ListView>(R.id.resultListView)
 

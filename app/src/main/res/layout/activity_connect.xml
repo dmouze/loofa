@@ -51,16 +51,15 @@
             android:layout_height="89dp"
             android:layout_marginStart="40dp"
             android:layout_marginBottom="32dp"
+            android:contentDescription="@string/lista"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/list"
-            android:contentDescription="@string/lista" />
+            app:srcCompat="@drawable/list" />
 
         <TextView
             android:id="@+id/listtxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
             android:fontFamily="@font/poppins_medium"
             android:shadowColor="#FFFFFF"
@@ -71,7 +70,8 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/listimg"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="@+id/listimg"
+            app:layout_constraintStart_toStartOf="@+id/listimg" />
 
 
         <LinearLayout
