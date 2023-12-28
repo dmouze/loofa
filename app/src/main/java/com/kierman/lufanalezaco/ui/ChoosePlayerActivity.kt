@@ -9,6 +9,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.*
@@ -16,7 +17,7 @@ import com.kierman.lufanalezaco.R
 import com.kierman.lufanalezaco.databinding.ActivityChoosePlayerBinding
 import com.kierman.lufanalezaco.util.UserListAdapter
 import com.kierman.lufanalezaco.util.UserModel
-class ChoosePlayerActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
+class ChoosePlayerActivity : AppCompatActivity(), UserListAdapter.ItemClickListener, UserListAdapter.ItemLongClickListener {
 
     private lateinit var binding: ActivityChoosePlayerBinding
     private lateinit var adapter: UserListAdapter
@@ -46,7 +47,7 @@ class ChoosePlayerActivity : AppCompatActivity(), UserListAdapter.ItemClickListe
         }
 
         val userList = mutableListOf<UserModel>()
-        adapter = UserListAdapter(userList, this)
+        adapter = UserListAdapter(userList, this,this)
 
         binding.userRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.userRecyclerView.adapter = adapter
@@ -82,5 +83,34 @@ class ChoosePlayerActivity : AppCompatActivity(), UserListAdapter.ItemClickListe
         intent.putExtra("user_results", resultArray)
         startActivity(intent)
         finish()
+    }
+
+    override fun onItemLongClick(user: UserModel) {
+        val id = user.id
+        val imie = user.name
+        showDeleteUserDialog(imie, id)
+    }
+
+    private fun showDeleteUserDialog(imie: String?, id: String?) {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle("Potwierdź usunięcie użytkownika")
+        alertDialogBuilder.setMessage("Czy na pewno chcesz usunąć użytkownika: $imie razem z wszystkimi wynikami?")
+        alertDialogBuilder.setPositiveButton("Tak") { _, _ ->
+            // Usuń użytkownika z Firebase
+            if (id != null) {
+                removeUserFromFirebase(id)
+            }
+        }
+        alertDialogBuilder.setNegativeButton("Anuluj") { _, _ ->
+        }
+
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+
+    private fun removeUserFromFirebase(id: String) {
+        val reference = databaseReference
+
+        reference.child(id).removeValue()
     }
 }

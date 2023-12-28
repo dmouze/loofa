@@ -7,7 +7,8 @@ import com.kierman.lufanalezaco.databinding.UserListItemBinding
 
 class UserListAdapter(
     private val userList: List<UserModel>,
-    private val itemClickListener: ItemClickListener
+    private val itemClickListener: ItemClickListener,
+    private val longClickListener: ItemLongClickListener
 ) : RecyclerView.Adapter<UserListAdapter.UserViewHolder>() {
 
     // Funkcja do znalezienia indeksu użytkownika z najlepszym wynikiem
@@ -41,7 +42,15 @@ class UserListAdapter(
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        holder.bind(userList[position], position)
+        val currentUser = userList[position]
+        holder.bind(currentUser, position)
+        holder.itemView.setOnClickListener {
+            itemClickListener.onItemClick(currentUser)
+        }
+        holder.itemView.setOnLongClickListener {
+            longClickListener.onItemLongClick(currentUser)
+            true
+        }
     }
 
     override fun getItemCount(): Int {
@@ -57,7 +66,7 @@ class UserListAdapter(
             val userNameText = if (isBestUser) {
                 "🥇${user.name}" // Dodać emotikonę tylko przed imieniem najlepszego użytkownika
             } else {
-                user.name // Pozostali użytkownicy bez emotikony
+                user.name ?: "" // Pozostali użytkownicy bez emotikony
             }
 
             binding.userNameTextView.text = userNameText
@@ -70,5 +79,9 @@ class UserListAdapter(
 
     interface ItemClickListener {
         fun onItemClick(user: UserModel)
+    }
+
+    interface ItemLongClickListener {
+        fun onItemLongClick(user: UserModel)
     }
 }

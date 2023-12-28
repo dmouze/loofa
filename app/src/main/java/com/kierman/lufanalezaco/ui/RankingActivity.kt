@@ -21,7 +21,9 @@ import com.kierman.lufanalezaco.util.ResultsAdapter
 import com.kierman.lufanalezaco.util.UserListAdapter
 import com.kierman.lufanalezaco.util.UserModel
 
-class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
+class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener,
+    UserListAdapter.ItemLongClickListener {
+
 
     private lateinit var binding: ActivityRankingBinding
     private lateinit var adapter: UserListAdapter
@@ -45,7 +47,7 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
             firebaseDatabase.reference.child("menele") // Zmień na odpowiednią ścieżkę w swojej bazie danych
 
         val userList = mutableListOf<UserModel>()
-        adapter = UserListAdapter(userList, this)
+        adapter = UserListAdapter(userList, this,this)
 
         binding.userRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.userRecyclerView.adapter = adapter
@@ -57,10 +59,16 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
                 userList.clear()
                 for (userSnapshot in snapshot.children) {
                     val id = userSnapshot.key // Pobierz ID użytkownika
-                    val name = userSnapshot.child("imie").getValue(String::class.java) // Pobierz imię użytkownika
-                    val czasMap = userSnapshot.child("czas").getValue(object : GenericTypeIndicator<HashMap<String, Double>>() {})
+                    val name = userSnapshot.child("imie")
+                        .getValue(String::class.java) // Pobierz imię użytkownika
+                    val czasMap = userSnapshot.child("czas")
+                        .getValue(object : GenericTypeIndicator<HashMap<String, Double>>() {})
                     val timeList = ArrayList(czasMap?.values ?: emptyList())
-                    val user = UserModel(id, name, timeList) // Tworzenie UserModel z ID, imieniem i czasami
+                    val user = UserModel(
+                        id,
+                        name,
+                        timeList
+                    ) // Tworzenie UserModel z ID, imieniem i czasami
                     userList.add(user)
                 }
                 adapter.notifyDataSetChanged()
@@ -77,7 +85,11 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         val imie = user.name
         showResultsDialog(results, imie, id)
     }
-
+    override fun onItemLongClick(user: UserModel) {
+        val id = user.id
+        val imie = user.name
+        showDeleteUserDialog(imie, id)
+    }
     @SuppressLint("InflateParams", "SetTextI18n")
     private fun showResultsDialog(results: List<Double>?, imie: String?, id: String?) {
         val dialog = Dialog(this)
@@ -125,21 +137,56 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         val adapter = ResultsAdapter(sortedResults)
         listView.adapter = adapter
 
+        fun removeValueFromFirebase(id: String, value: Double) {
+            val reference = databaseReference
+
+            // Tworzenie referencji do konkretnego użytkownika na podstawie ID
+            val userReference = reference.child(id)
+
+            userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val userData = dataSnapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
+
+                    if (userData != null) {
+                        // Pobieranie mapy czasów użytkownika
+                        val czasMap = userData["czas"] as? Map<String, Any>
+
+                        if (czasMap != null) {
+                            for ((czasKey, czasValue) in czasMap) {
+                                if (czasValue is Double && czasValue == value) {
+                                    userReference.child("czas").child(czasKey).removeValue()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Obsługa błędów
+                    println("Error: ${databaseError.message}")
+                }
+            })
+        }
+
 
         listView.setOnItemLongClickListener { _, _, position, _ ->
             val selectedResult = sortedResults[position]
-            5
 
-            // Konwertuj selectedResult z "0:000" na "0.000"
-            val resultValue = formatedResult.replace(":", ".")
+            val resultValue = selectedResult.replace(":", ".")
+
+            // Dostosuj format wartości do tego samego, co w bazie danych
+            val formatedValue = String.format("%.3f", resultValue.toDouble())
 
             val alertDialogBuilder = AlertDialog.Builder(this)
             alertDialogBuilder.setTitle("Potwierdź usunięcie wyniku")
             alertDialogBuilder.setMessage("Czy na pewno chcesz usunąć wynik: $selectedResult?")
             alertDialogBuilder.setPositiveButton("Tak") { _, _ ->
                 // Usuń wynik z Firebase
-                Log.d("odczyt", id.toString() + selectedResult)
-                databaseReference.child("menele").child(id.toString()).child("czas").child(resultValue).removeValue()
+                Log.d("odczyt", id.toString() + formatedValue)
+
+                if (id != null) {
+                    removeValueFromFirebase(id, formatedValue.toDouble())
+                }
 
                 // Po usunięciu odśwież widok
                 adapter.notifyDataSetChanged()
@@ -157,6 +204,31 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
 
         dialog.show()
     }
+    private fun showDeleteUserDialog(imie: String?, id: String?) {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle("Potwierdź usunięcie użytkownika")
+        alertDialogBuilder.setMessage("Czy na pewno chcesz usunąć użytkownika: $imie razem z wszystkimi wynikami?")
+        alertDialogBuilder.setPositiveButton("Tak") { _, _ ->
+            // Usuń użytkownika z Firebase
+            if (id != null) {
+                removeUserFromFirebase(id)
+            }
+        }
+        alertDialogBuilder.setNegativeButton("Anuluj") { _, _ ->
+            // Nic nie rób, po prostu zamknij dialog potwierdzający
+        }
+
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+
+    private fun removeUserFromFirebase(id: String) {
+        val reference = databaseReference
+
+        // Usuń użytkownika z bazy danych
+        reference.child(id).removeValue()
+    }
+
 
     private fun getTimeStringFromDouble(time: Double): String {
         val seconds = time.toInt()
@@ -164,9 +236,5 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         return String.format("%02d:%03d", seconds, milliseconds)
     }
 
-    private fun getTimeFormated(time: Double): String {
-        val seconds = time.toInt()
-        val milliseconds = ((time - seconds) * 1000).toInt()
-        return String.format("%d.%03d", seconds, milliseconds)
-    }
+
 }
