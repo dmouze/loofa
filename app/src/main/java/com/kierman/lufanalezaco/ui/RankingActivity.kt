@@ -3,10 +3,10 @@
 package com.kierman.lufanalezaco.ui
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -50,6 +50,7 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         binding.userRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.userRecyclerView.adapter = adapter
 
+
         databaseReference.addValueEventListener(object : ValueEventListener {
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -72,14 +73,15 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
 
     override fun onItemClick(user: UserModel) {
         val results = user.time
+        val id = user.id
         val imie = user.name
-        showResultsDialog(results, imie)
+        showResultsDialog(results, imie, id)
     }
 
     @SuppressLint("InflateParams", "SetTextI18n")
-    private fun showResultsDialog(results: List<Double>?, imie: String?) {
+    private fun showResultsDialog(results: List<Double>?, imie: String?, id: String?) {
         val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // Ukrycie tytułu, jeśli istnieje
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.custom_result_list)
 
         val window = dialog.window
@@ -89,7 +91,7 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         attributes?.height = WindowManager.LayoutParams.WRAP_CONTENT
         window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
-        // Ustawienie tła dla okna dialogowego (możesz dostosować to do swojego tła)
+        // Ustawienie tła dla okna dialogowego
         window?.setBackgroundDrawableResource(R.drawable.round_background_white)
 
         attributes?.y = resources.getDimensionPixelSize(R.dimen.bottom_margin)
@@ -123,6 +125,36 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         val adapter = ResultsAdapter(sortedResults)
         listView.adapter = adapter
 
+
+        listView.setOnItemLongClickListener { _, _, position, _ ->
+            val selectedResult = sortedResults[position]
+            5
+
+            // Konwertuj selectedResult z "0:000" na "0.000"
+            val resultValue = formatedResult.replace(":", ".")
+
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            alertDialogBuilder.setTitle("Potwierdź usunięcie wyniku")
+            alertDialogBuilder.setMessage("Czy na pewno chcesz usunąć wynik: $selectedResult?")
+            alertDialogBuilder.setPositiveButton("Tak") { _, _ ->
+                // Usuń wynik z Firebase
+                Log.d("odczyt", id.toString() + selectedResult)
+                databaseReference.child("menele").child(id.toString()).child("czas").child(resultValue).removeValue()
+
+                // Po usunięciu odśwież widok
+                adapter.notifyDataSetChanged()
+                dialog.dismiss()
+            }
+            alertDialogBuilder.setNegativeButton("Anuluj") { _, _ ->
+                // Nic nie rób, po prostu zamknij dialog potwierdzający
+            }
+
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+
+            true
+        }
+
         dialog.show()
     }
 
@@ -130,5 +162,11 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener {
         val seconds = time.toInt()
         val milliseconds = ((time - seconds) * 1000).toInt()
         return String.format("%02d:%03d", seconds, milliseconds)
+    }
+
+    private fun getTimeFormated(time: Double): String {
+        val seconds = time.toInt()
+        val milliseconds = ((time - seconds) * 1000).toInt()
+        return String.format("%d.%03d", seconds, milliseconds)
     }
 }
