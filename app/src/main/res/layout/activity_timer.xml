@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="39dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="230dp"
             android:fontFamily="@font/poppins_medium"
             android:shadowColor="#FFFFFF"
             android:shadowDx="1.5"
@@ -102,6 +102,21 @@
             app:layout_constraintStart_toStartOf="@+id/imageView3"
             app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="122dp"
+            android:layout_height="37dp"
+            android:minWidth="220dp"
+            android:shadowColor="#FFFFFF"
+            android:shadowDx="1.5"
+            android:shadowDy="4"
+            android:shadowRadius="1.6"
+            android:src="@drawable/round_background_appcolor1"
+            app:layout_constraintBottom_toTopOf="@+id/text_change"
+            app:layout_constraintEnd_toEndOf="@+id/text_change"
+            app:layout_constraintStart_toStartOf="@+id/text_change"
+            app:layout_constraintTop_toBottomOf="@+id/timeTV" />
+
         <TextView
             android:id="@+id/text_change"
             android:layout_width="wrap_content"
@@ -134,7 +149,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/current_user_text"
             app:layout_constraintTop_toBottomOf="@+id/imageView3"
-            app:layout_constraintVertical_bias="0.52" />
+            app:layout_constraintVertical_bias="0.19" />
 
         <TextView
             android:id="@+id/lastTry"
@@ -183,6 +198,20 @@
             android:textSize="35sp"
             app:layout_constraintEnd_toEndOf="@+id/lastTry"
             app:layout_constraintTop_toBottomOf="@+id/lastTry" />
+
+        <TextView
+            android:id="@+id/cleaning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/notosans"
+            android:text="CZYSZCZENIE"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+            app:layout_constraintEnd_toEndOf="@+id/imageView4"
+            app:layout_constraintStart_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="@+id/imageView4"
+            app:layout_constraintVertical_bias="0.44" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -185,7 +185,7 @@ class RankingActivity : AppCompatActivity(), UserListAdapter.ItemClickListener,
                 Log.d("odczyt", id.toString() + formatedValue)
 
                 if (id != null) {
-                    removeValueFromFirebase(id, formatedValue.toDouble())
+                    removeValueFromFirebase(id, formatedValue.replace(",", ".").toDouble())
                 }
 
                 // Po usunięciu odśwież widok

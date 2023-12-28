@@ -1,6 +1,7 @@
 package com.kierman.lufanalezaco.ui
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -24,6 +25,7 @@ import com.kierman.lufanalezaco.util.TimerService
 import com.kierman.lufanalezaco.viewmodel.LufaViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 @Suppress("DEPRECATION")
 class TimerActivity : AppCompatActivity() {
 
@@ -36,6 +38,7 @@ class TimerActivity : AppCompatActivity() {
     private var userId = ""
     private var imie = ""
     private var results = ArrayList<Double>()
+
     @SuppressLint("UnspecifiedRegisterReceiverFlag", "NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +63,12 @@ class TimerActivity : AppCompatActivity() {
         val reset = findViewById<ImageView>(R.id.resetButton)
         val changeUser = findViewById<TextView>(R.id.text_change)
 
+        val cleaning = findViewById<TextView>(R.id.cleaning)
+
+        cleaning.setOnClickListener {
+            showCleaningDialog()
+        }
+
         showResults(results, imie)
 
         changeUser.setOnClickListener {
@@ -68,19 +77,32 @@ class TimerActivity : AppCompatActivity() {
             finish()
         }
 
-        viewModel.putTxt.observe(this) { newReceivedData ->
-            if (newReceivedData != null)  {
-                    recv = newReceivedData
-                    viewModel.txtRead.set(recv)
+        var isConditionAExecuted = false
+        var conditionAExecutionTime = 0L
+        var conditionBExecutionTime = 0L
 
-                    if (recv == "a") {
-                        startTimer()
-                        FirebaseApp.initializeApp(this)
-                    } else if (recv == "b") {
+        viewModel.putTxt.observe(this) { newReceivedData ->
+            if (newReceivedData != null) {
+                recv = newReceivedData
+                viewModel.txtRead.set(recv)
+
+                val currentTime = System.currentTimeMillis()
+
+                if (recv == "a" && !isConditionAExecuted && (currentTime - conditionBExecutionTime) >= 1000) {
+                    startTimer()
+                    FirebaseApp.initializeApp(this)
+                    isConditionAExecuted = true
+                    conditionAExecutionTime = currentTime
+                } else if (recv != "a" && isConditionAExecuted) {
+                    val elapsedTime = currentTime - conditionAExecutionTime
+
+                    if (elapsedTime >= 500) {
                         getValues()
                         stopTimer()
+                        isConditionAExecuted = false
+                        conditionBExecutionTime = currentTime
                     }
-
+                }
             }
         }
 
@@ -97,7 +119,11 @@ class TimerActivity : AppCompatActivity() {
     private val connectionLostReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             stopTimerWhileDisconnect()
-            Toast.makeText(context, "Połączenie z urządzeniem zostało przerwane.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                "Połączenie z urządzeniem zostało przerwane.",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -139,6 +165,22 @@ class TimerActivity : AppCompatActivity() {
         }
     }
 
+    private fun showCleaningDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle("Zarządzaj otwarciem zaworu")
+        alertDialogBuilder.setMessage("Otwórz lub zamknij zawór")
+        alertDialogBuilder.setPositiveButton("OTWÓRZ") { _, _ ->
+            viewModel.onClickSendData("c")
+        }
+        alertDialogBuilder.setNegativeButton("ZAMKNIJ") { _, _ ->
+            viewModel.onClickSendData("d")
+        }
+
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+
+
     private fun stopTimerWhileDisconnect() {
         stopService(serviceIntent)
         timerStarted = false
@@ -165,7 +207,6 @@ class TimerActivity : AppCompatActivity() {
         val currentUser = findViewById<TextView>(R.id.current_user)
         val recordView = findViewById<TextView>(R.id.recordView)
         val lastTryView = findViewById<TextView>(R.id.lastTryView)
-        val timer = findViewById<TextView>(R.id.timeTV)
         currentUser.text = "$imie"
 
         // Wybierz ostatni wynik
@@ -175,7 +216,6 @@ class TimerActivity : AppCompatActivity() {
 
         if (latestResult != null) {
             lastTryView.text = showLatestResult?.let { formatTime(it) }
-            timer.text = showLatestResult?.let { formatTime(it) }
         } else {
             lastTryView.text = "Brak"
         }
