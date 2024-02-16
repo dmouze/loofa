@@ -35,19 +35,23 @@
         </activity>
         <activity
             android:name=".ui.TimerActivity"
-            android:windowSoftInputMode="adjustNothing" >
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
         <activity
             android:name=".ui.RankingActivity"
-            android:windowSoftInputMode="adjustNothing" >
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
         <activity
             android:name=".ui.ChoosePlayerActivity"
-            android:label="Choose Player">
+            android:label="Choose Player"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
         <activity
             android:name=".ui.ConnectActivity"
-            android:windowSoftInputMode="adjustNothing" >
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
 
         <service

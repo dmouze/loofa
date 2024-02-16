@@ -1,34 +1,35 @@
 package com.kierman.lufanalezaco.ui
 
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.kierman.lufanalezaco.R
 
-@SuppressLint("CustomSplashScreen")
 @Suppress("DEPRECATION")
 class SplashScreen : AppCompatActivity() {
-    private val splashScreenDuration: Long =
-        7000 // Czas trwania Splash Screenu w milisekundach (8,5 sekundy)
+    private val splashScreenDuration: Long = 7000
     private lateinit var handler: Handler
     private lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-        actionBar?.hide()
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE
+        supportActionBar?.hide()
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         setContentView(R.layout.activity_splashscreen)
 
         val introLogo = findViewById<ImageView>(R.id.intro_icon)
